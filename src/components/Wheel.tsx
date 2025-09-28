@@ -1,48 +1,34 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  Box,
-  Button,
-} from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 
-const sectors: { color: string; label: string }[] = [
+const sectors = [
   { color: '#f82', label: '$1000' },
   { color: '#0bf', label: '$500' },
-  { color: '#fb0', label: '$1' },
-  { color: '#0fb', label: 'NOTHING' },
-  { color: '#b0f', label: '$200' },
-  { color: '#f0b', label: '$50' },
-  { color: '#bf0', label: '$300' },
-  { color: '#aaa', label: 'LOSE' },
+  { color: '#fb0', label: '$200' },
+  { color: '#0fb', label: '$50' },
+  { color: '#b0f', label: '$100' },
+  { color: '#f0b', label: '$5' },
+  { color: '#bf0', label: 'LOSE' },
+  { color: '#0ff', label: 'NOTHING' },
 ];
-
-const PI = Math.PI;
-const TAU = 2 * PI;
 
 const Wheel: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  const [angVel, setAngVel] = useState(0); // angular velocity
-  const [angle, setAngle] = useState(0); // current angle
   const [winner, setWinner] = useState<string | null>(null);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [angVel, setAngVel] = useState(0);
+  const [ang, setAng] = useState(0);
 
   const tot = sectors.length;
+  const PI = Math.PI;
+  const TAU = 2 * PI;
   const arc = TAU / tot;
   const friction = 0.991;
 
-  const getIndex = (ang: number) => Math.floor(tot - (ang / TAU) * tot) % tot;
+  const getIndex = () => Math.floor(tot - (ang / TAU) * tot) % tot;
 
   const drawSector = (
     ctx: CanvasRenderingContext2D,
-    sector: { color: string; label: string },
+    sector: any,
     i: number,
     rad: number
   ) => {
@@ -59,12 +45,34 @@ const Wheel: React.FC = () => {
     ctx.rotate(ang + arc / 2);
     ctx.textAlign = 'right';
     ctx.fillStyle = '#fff';
-    ctx.font = `bold ${rad * 0.08}px sans-serif`;
+    ctx.font = 'bold 20px sans-serif';
     ctx.fillText(sector.label, rad - 10, 10);
     ctx.restore();
   };
 
-  const drawWheel = () => {
+  const rotate = (ctx: CanvasRenderingContext2D) => {
+    const idx = getIndex();
+    const sector = sectors[idx];
+
+    if (!sector) return;
+
+    ctx.canvas.style.transform = `rotate(${ang - PI / 2}rad)`;
+
+    if (!angVel) {
+      setWinner(sector.label);
+    }
+  };
+
+  const frame = (ctx: CanvasRenderingContext2D) => {
+    if (!angVel) return;
+    let newVel = angVel * friction;
+    if (newVel < 0.002) newVel = 0;
+    setAng((prev) => (prev + newVel) % TAU);
+    setAngVel(newVel);
+    rotate(ctx);
+  };
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -72,132 +80,83 @@ const Wheel: React.FC = () => {
 
     const dia = canvas.width;
     const rad = dia / 2;
-    ctx.clearRect(0, 0, dia, dia);
 
     sectors.forEach((sector, i) => drawSector(ctx, sector, i, rad));
-  };
 
-  useEffect(() => {
-    let frame: number;
-
-    const animate = () => {
-      if (angVel) {
-        const newVel = angVel * friction;
-        const newAng = (angle + newVel) % TAU;
-
-        setAngVel(newVel > 0.002 ? newVel : 0);
-        setAngle(newAng);
-
-        if (newVel <= 0.002) {
-          const idx = getIndex(newAng);
-          const sector = sectors[idx];
-          if (sector) {
-            setWinner(sector.label);
-            onOpen(); // otvori popup
-          }
-        }
-      }
-      frame = requestAnimationFrame(animate);
+    const engine = () => {
+      frame(ctx);
+      requestAnimationFrame(engine);
     };
-
-    drawWheel();
-
-    if (canvasRef.current) {
-      canvasRef.current.style.transform = `rotate(${angle - PI / 2}rad)`;
-    }
-
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, [angle, angVel]);
+    engine();
+  }, [angVel]);
 
   const spin = () => {
-    if (!angVel) {
-      setWinner(null);
-      setAngVel(Math.random() * 0.3 + 0.25);
-    }
+    if (!angVel) setAngVel(Math.random() * 0.2 + 0.25);
   };
 
   return (
-    <Box textAlign="center" p={4}>
-      <Box position="relative" display="inline-block">
-        {/* Marker */}
-        <Box
-          position="absolute"
-          top="-15px"
-          left="50%"
-          ml="-12px"
-          w="0"
-          h="0"
-          borderLeft="12px solid transparent"
-          borderRight="12px solid transparent"
-          borderBottom="25px solid yellow"
-          zIndex={2}
-        />
-
-        {/* Wheel */}
+    <Box
+      w="100vw"
+      h="100vh"
+      bg="pink"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      flexDirection="column"
+    >
+      <Box position="relative" w={['80vw', '400px']} h={['80vw', '400px']}>
         <canvas
+          id="wheel"
           ref={canvasRef}
           width={400}
           height={400}
           style={{
-            width: '80vw',
-            maxWidth: '400px',
-            height: 'auto',
+            width: '100%',
+            height: '100%',
             borderRadius: '50%',
-            border: '6px solid black',
+            border: '8px solid black',
             boxShadow: '0 0 20px rgba(0,0,0,0.5)',
           }}
         />
-
-        {/* Spin button */}
         <Box
+          id="spin"
           onClick={spin}
-          fontWeight="bold"
-          fontSize="18px"
-          cursor="pointer"
           display="flex"
           justifyContent="center"
           alignItems="center"
           position="absolute"
           top="50%"
           left="50%"
-          w="25%"
-          h="25%"
-          mt="-12.5%"
-          ml="-12.5%"
-          bg="#673ab7"
-          color="#fff"
+          transform="translate(-50%, -50%)"
+          w="30%"
+          h="30%"
+          bg="purple"
+          color="white"
           borderRadius="50%"
-          boxShadow="0 0 0 5px #fff, 0 0px 10px 3px rgba(0,0,0,0.5)"
+          fontWeight="bold"
+          cursor="pointer"
+          boxShadow="0 0 10px rgba(0,0,0,0.5)"
         >
           SPIN
         </Box>
+        <Box
+          position="absolute"
+          top="-20px"
+          left="50%"
+          transform="translateX(-50%)"
+          w="0"
+          h="0"
+          borderLeft="20px solid transparent"
+          borderRight="20px solid transparent"
+          borderBottom="30px solid yellow"
+        />
       </Box>
 
-      {/* Popup za rezultat */}
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent
-          bgGradient="linear(to-b, pink.400, purple.600)"
-          color="white"
-          textAlign="center"
-          borderRadius="lg"
-          p={6}
-        >
-          <ModalHeader fontSize="2xl" fontWeight="bold">
-            🎉 Čestitamo!
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Box fontSize="40px" fontWeight="extrabold">
-              {winner}
-            </Box>
-            <Button mt={4} colorScheme="pink" onClick={onClose}>
-              Zatvori
-            </Button>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      {winner && (
+        <Box mt={6} fontSize={['18px', '22px']} fontWeight="bold" color="white">
+          🎉 Osvojio si: {winner}
+        </Box>
+      )}
     </Box>
   );
 };
