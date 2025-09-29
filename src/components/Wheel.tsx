@@ -3,39 +3,42 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
   Button,
   useDisclosure,
   Text,
+  Box,
 } from '@chakra-ui/react';
+import SpinButton from './SpinButton';
+
+interface WheelProps {
+  spinsLeft: number;
+  setSpinsLeft: React.Dispatch<React.SetStateAction<number>>;
+}
 
 const sectors = [
-  { color: '#f82', label: '$1000' },
-  { color: '#0bf', label: '$500' },
-  { color: '#fb0', label: '$200' },
-  { color: '#0fb', label: '$50' },
-  { color: '#b0f', label: '$1' },
-  { color: '#f0b', label: 'NOTHING' },
-  { color: '#bf0', label: 'LOSE' },
+  { label: 'FREE SPINS', gradient: ['#FFAAE5', '#F5D4EB'] },
+  { label: 'TRY AGAIN', gradient: ['#F027C8', '#E000B4'] },
+  { label: 'FREE SPINS', gradient: ['#FFAAE5', '#F5D4EB'] },
+  { label: 'TRY AGAIN', gradient: ['#F027C8', '#E000B4'] },
+  { label: 'FREE SPINS', gradient: ['#FFAAE5', '#F5D4EB'] },
+  { label: 'TRY AGAIN', gradient: ['#F027C8', '#E000B4'] },
 ];
 
-const Wheel: React.FC = () => {
+const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [winner, setWinner] = useState<string | null>(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const tot = sectors.length;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isSpinning, setIsSpinning] = useState(false);
+
   const PI = Math.PI;
   const TAU = 2 * PI;
   const arc = TAU / sectors.length;
-  let angVel = 0; // Angular velocity
-  let ang = 0; // Angle in radians
-  const friction = 0.991;
+
+  const ang = useRef(0);
+  const angVel = useRef(0);
 
   const rand = (m: number, M: number) => Math.random() * (M - m) + m;
-  const getIndex = () => Math.floor(tot - (ang / TAU) * tot) % tot;
 
   function drawSector(
     ctx: CanvasRenderingContext2D,
@@ -43,40 +46,64 @@ const Wheel: React.FC = () => {
     i: number,
     rad: number
   ) {
-    const ang = arc * i;
+    const angSector = arc * i;
     ctx.save();
-    // COLOR
     ctx.beginPath();
-    ctx.fillStyle = sector.color;
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, rad * 2);
+    gradient.addColorStop(0, sector.gradient[0]);
+    gradient.addColorStop(1, sector.gradient[1]);
+    ctx.fillStyle = gradient;
+
     ctx.moveTo(rad, rad);
-    ctx.arc(rad, rad, rad, ang, ang + arc);
+    ctx.arc(rad, rad, rad, angSector, angSector + arc);
     ctx.lineTo(rad, rad);
     ctx.fill();
-    // TEXT
+
     ctx.translate(rad, rad);
-    ctx.rotate(ang + arc / 2);
-    ctx.textAlign = 'right';
+    ctx.rotate(angSector + arc / 2);
+    ctx.textAlign = 'center';
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 20px sans-serif';
-    ctx.fillText(sector.label, rad - 10, 10);
+    ctx.font = '800 32px Jost, sans-serif';
+    ctx.fillText(sector.label, rad / 1.5, 10);
+
     ctx.restore();
   }
 
   function rotate(ctx: CanvasRenderingContext2D) {
-    ctx.canvas.style.transform = `rotate(${ang - PI / 2}rad)`;
+    ctx.canvas.style.transform = `rotate(${ang.current - PI / 2}rad)`;
   }
 
   function frame(ctx: CanvasRenderingContext2D) {
-    if (!angVel) return;
-    angVel *= friction;
-    if (angVel < 0.002) {
-      angVel = 0;
-      const sector = sectors[getIndex()] ?? { color: 'gray', label: 'NOTHING' }; // ✅ fallback
-      setWinner(sector.label);
-      onOpen();
+    if (!angVel.current) return;
+
+    ang.current += angVel.current;
+    ang.current %= TAU;
+
+    // uspori spin
+    angVel.current *= 0.991;
+
+    if (angVel.current < 0.002) {
+      angVel.current = 0;
+
+      let result: string;
+      if (spinsLeft === 2) {
+        result = 'TRY AGAIN';
+      } else {
+        result = 'FREE SPINS';
+      }
+
+      console.log('🎯 Forced result:', result);
+      setWinner(result);
+
+      if (result === 'FREE SPINS') {
+        setTimeout(() => onOpen(), 100);
+      }
+
+      setSpinsLeft((prev) => prev - 1);
+      setIsSpinning(false);
     }
-    ang += angVel;
-    ang %= TAU;
+
     rotate(ctx);
   }
 
@@ -98,99 +125,169 @@ const Wheel: React.FC = () => {
   }, []);
 
   const spin = () => {
-    if (!angVel) angVel = rand(0.25, 0.45);
+    if (isSpinning || spinsLeft <= 0) return;
+
+    console.log('▶️ Starting spin. Spins left:', spinsLeft);
+    setIsSpinning(true);
+
+    angVel.current = rand(0.25, 0.45);
   };
 
   return (
-    <div
-      style={{
-        height: '100vh',
-        width: '100vw',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: '#ffb6c1',
-      }}
+    <Box
+      position="relative"
+      w="100%"
+      maxW="500px"
+      aspectRatio="1 / 1"
+      mx="auto"
+      mb="60px"
     >
-      <div style={{ position: 'relative' }}>
-        {/* Wheel */}
-        <canvas
-          id="wheel"
-          ref={canvasRef}
-          width={window.innerWidth < 500 ? 250 : 400}
-          height={window.innerWidth < 500 ? 250 : 400}
-          style={{ borderRadius: '50%', border: '5px solid black' }}
-        />
+      {/* Wheel */}
+      <canvas
+        id="wheel"
+        ref={canvasRef}
+        width={800}
+        height={800}
+        style={{
+          width: '100%',
+          height: '100%',
+          borderRadius: '50%',
+        }}
+      />
 
-        {/* Spin Button */}
-        <Button
-          id="spin"
-          onClick={spin}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            borderRadius: '50%',
-            width: '80px',
-            height: '80px',
-            background: 'purple',
-            color: 'white',
-            fontWeight: 'bold',
-          }}
-        >
-          SPIN
-        </Button>
+      {/* Ring overlay */}
+      <Box
+        position="absolute"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        w="100%"
+        h="100%"
+        pointerEvents="none"
+      >
+        <Box position="relative" w="100%" h="100%">
+          <Box
+            as="img"
+            src="/wheel-ring.svg"
+            alt="Wheel Ring"
+            w="100%"
+            h="100%"
+            objectFit="contain"
+          />
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            w="100%"
+            h="100%"
+            bgGradient="linear(180deg, #F027C8 0%, #E000B4 100%)"
+            mixBlendMode="color"
+            style={{
+              WebkitMaskImage: 'url(/wheel-ring.svg)',
+              WebkitMaskRepeat: 'no-repeat',
+              WebkitMaskSize: 'contain',
+            }}
+          />
+        </Box>
+      </Box>
 
-        {/* Pointer */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '-20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 0,
-            height: 0,
-            borderLeft: '15px solid transparent',
-            borderRight: '15px solid transparent',
-            borderBottom: '30px solid yellow',
-          }}
-        />
-      </div>
+      {/* Spin Button */}
+      <Box
+        onClick={spin}
+        position="absolute"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        cursor="pointer"
+      >
+        <SpinButton />
+      </Box>
 
-      {/* Modal */}
-      {/* Modal */}
+      {/* Pointer */}
+      <img
+        src="/src/logos/Group.svg"
+        alt="pointer"
+        style={{
+          position: 'absolute',
+          top: '-20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '56px',
+          height: '56px',
+        }}
+      />
+
+      {/* Winning Modal */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay bg="rgba(0,0,0,0.7)" />
         <ModalContent
-          bgGradient="linear(to-br, pink.300, purple.400)"
-          color="white"
-          borderRadius="2xl"
-          boxShadow="2xl"
-          textAlign="center"
-          p={6}
+          position="relative"
+          w="375px"
+          h="485px"
+          top="180px"
+          left="8px"
+          bg="transparent"
+          boxShadow="none"
         >
-          <ModalHeader fontSize="2xl" fontWeight="extrabold">
-            🎉 Congratulations!
-          </ModalHeader>
-          <ModalCloseButton color="white" />
-          <ModalBody>
-            <Text fontSize="3xl" fontWeight="bold" mb={4}>
+          {/* Background frame */}
+          <Box
+            as="img"
+            src="/WinningModal.png"
+            alt="Winning Frame"
+            position="absolute"
+            top="0"
+            left="0"
+            w="100%"
+            h="100%"
+            objectFit="contain"
+            pointerEvents="none"
+          />
+
+          {/* Content inside */}
+          <Box
+            position="relative"
+            w="100%"
+            h="100%"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+            color="white"
+            px={6}
+          >
+            <Text fontSize="20px" fontWeight="bold" mb={2}>
+              CONGRATULATIONS YOU WON:
+            </Text>
+
+            <Text
+              fontSize="64px"
+              fontWeight="extrabold"
+              color="pink.200"
+              lineHeight="1"
+            >
+              {winner === 'FREE SPINS' ? '5' : ''}
+            </Text>
+
+            <Text fontSize="28px" fontWeight="bold" mb={6}>
               {winner}
             </Text>
+
             <Button
-              colorScheme="pink"
+              bg="pink.500"
+              color="white"
               size="lg"
-              w="full"
               borderRadius="full"
+              px={10}
               onClick={onClose}
+              _hover={{ bg: 'pink.400' }}
             >
-              Close
+              CLAIM PRIZE
             </Button>
-          </ModalBody>
+          </Box>
         </ModalContent>
       </Modal>
-    </div>
+    </Box>
   );
 };
 
