@@ -1,12 +1,10 @@
 import React from 'react';
 import { Flex, Text, Image } from '@chakra-ui/react';
 import keyMascot from '../logos/key-mascot.svg';
-
 interface WhaleLogoProps {
   width?: string | number;
   height?: string | number;
 }
-
 const WhaleLogo: React.FC<WhaleLogoProps> = ({
   width = 'clamp(140px, 30vw, 200px)',
   height = 'auto',
@@ -20,12 +18,13 @@ const WhaleLogo: React.FC<WhaleLogoProps> = ({
       width={width}
       height={height}
     >
+      {' '}
       <Image
         src={keyMascot}
         alt="Whale Logo"
         width="clamp(24px, 8vw, 44px)"
         height="auto"
-      />
+      />{' '}
       <Text
         color="#FFF"
         textAlign="center"
@@ -35,10 +34,10 @@ const WhaleLogo: React.FC<WhaleLogoProps> = ({
         fontWeight="800"
         lineHeight="1.2"
       >
-        Whale.io
-      </Text>
+        {' '}
+        Whale.io{' '}
+      </Text>{' '}
     </Flex>
   );
 };
-
 export default WhaleLogo;
