@@ -40,6 +40,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
 
   const rand = (m: number, M: number) => Math.random() * (M - m) + m;
 
+  // nacrtaj jedan sektor
   function drawSector(
     ctx: CanvasRenderingContext2D,
     sector: any,
@@ -93,7 +94,6 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         result = 'FREE SPINS';
       }
 
-      console.log('🎯 Forced result:', result);
       setWinner(result);
 
       if (result === 'FREE SPINS') {
@@ -126,10 +126,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
 
   const spin = () => {
     if (isSpinning || spinsLeft <= 0) return;
-
-    console.log('▶️ Starting spin. Spins left:', spinsLeft);
     setIsSpinning(true);
-
     angVel.current = rand(0.25, 0.45);
   };
 
@@ -144,7 +141,6 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
     >
       {/* Wheel */}
       <canvas
-        id="wheel"
         ref={canvasRef}
         width={800}
         height={800}
@@ -203,9 +199,9 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         <SpinButton />
       </Box>
 
-      {/* Pointer */}
+      {/* Pointer iz public/ */}
       <img
-        src="/src/logos/Group.svg"
+        src="/Group.svg"
         alt="pointer"
         style={{
           position: 'absolute',
