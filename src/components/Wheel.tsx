@@ -69,11 +69,9 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
     ctx.font = `800 ${fontSize}px Jost, sans-serif`;
 
     if (sector.label === 'TRY AGAIN') {
-      // Bijeli tekst
       ctx.fillStyle = '#FFF';
       ctx.fillText(sector.label, rad * 0.65, fontSize / 3);
     } else if (sector.label === 'FREE SPINS') {
-      // Gradient tekst (linear-gradient 180deg, #FF2AD5 → #C3009D)
       const textGradient = ctx.createLinearGradient(0, -fontSize, 0, fontSize);
       textGradient.addColorStop(0, '#FF2AD5');
       textGradient.addColorStop(1, '#C3009D');
@@ -126,9 +124,8 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // uvijek se prilagodi roditelju
     const resize = () => {
-      const size = Math.min(canvas.parentElement!.offsetWidth, 500); // max 500px
+      const size = canvas.parentElement!.offsetWidth; // full parent size
       canvas.width = size;
       canvas.height = size;
 
@@ -157,10 +154,10 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
     <Box
       position="relative"
       w="100%"
-      maxW="500px"
+      maxW={['300px', '400px', '500px']} // responsive max
       aspectRatio="1/1"
       mx="auto"
-      mb="60px"
+      mb={['20px', '40px', '60px']}
     >
       {/* Wheel */}
       <canvas
@@ -226,7 +223,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         alt="pointer"
         style={{
           position: 'absolute',
-          top: '-5%',
+          top: '-6%',
           left: '50%',
           transform: 'translateX(-50%)',
           width: '12%',
@@ -276,7 +273,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             </Text>
 
             <Text
-              fontSize={['40px', '64px']}
+              fontSize="clamp(2rem, 6vw, 4rem)"
               fontWeight="extrabold"
               color="pink.200"
               lineHeight="1"

@@ -26,10 +26,10 @@ const App: React.FC = () => {
           src="/character-left.png"
           alt="Character Left"
           position="absolute"
-          left={['-80px', '-40px', '20px', '140px']} // mobile → desktop
-          bottom={['-60px', '-80px', '-100px', '-100px']}
-          w={['0px', '120px', '240px', '400px']} // na najmanjem ekranu nestaje
-          display={['none', 'block']} // sakrij na najmanjem
+          left={['-60px', '-40px', '20px', '100px']}
+          bottom={['-40px', '-60px', '-80px', '-100px']}
+          w="clamp(120px, 20vw, 400px)"
+          display={['none', 'block']}
           objectFit="contain"
           pointerEvents="none"
         />
@@ -39,9 +39,9 @@ const App: React.FC = () => {
           src="/rightcarachter.png"
           alt="Character Right"
           position="absolute"
-          right={['-80px', '-40px', '20px', '100px']}
-          bottom={['-60px', '-80px', '-100px', '-100px']}
-          w={['0px', '120px', '240px', '400px']}
+          right={['-60px', '-40px', '20px', '100px']}
+          bottom={['-40px', '-60px', '-80px', '-100px']}
+          w="clamp(120px, 20vw, 400px)"
           display={['none', 'block']}
           objectFit="contain"
           pointerEvents="none"
@@ -56,18 +56,15 @@ const App: React.FC = () => {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          gap={['16px', '24px', '32px', '40px']}
-          w="100%"
+          gap="clamp(16px, 4vw, 40px)"
+          w="90vw"
           maxW="600px"
-          px={[2, 4, 6]} // padding za male ekrane
+          px={[2, 4, 6]}
         >
           <SpinsBanner spinsLeft={spinsLeft} />
 
-          {/* Wheel wrapper – responsive veličine */}
-          <Box
-            w={['200px', '260px', '340px', '420px']}
-            h={['200px', '260px', '340px', '420px']}
-          >
+          {/* Wheel wrapper – potpuno responsive */}
+          <Box w="clamp(200px, 40vw, 420px)" aspectRatio="1/1">
             <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
           </Box>
         </Box>
