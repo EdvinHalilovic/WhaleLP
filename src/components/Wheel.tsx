@@ -40,7 +40,6 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
 
   const rand = (m: number, M: number) => Math.random() * (M - m) + m;
 
-  // nacrtaj jedan sektor
   function drawSector(
     ctx: CanvasRenderingContext2D,
     sector: any,
@@ -61,12 +60,26 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
     ctx.lineTo(rad, rad);
     ctx.fill();
 
+    // tekst
     ctx.translate(rad, rad);
     ctx.rotate(angSector + arc / 2);
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#fff';
-    ctx.font = '800 32px Jost, sans-serif';
-    ctx.fillText(sector.label, rad / 1.5, 10);
+
+    const fontSize = Math.floor(rad * 0.08);
+    ctx.font = `800 ${fontSize}px Jost, sans-serif`;
+
+    if (sector.label === 'TRY AGAIN') {
+      // Bijeli tekst
+      ctx.fillStyle = '#FFF';
+      ctx.fillText(sector.label, rad * 0.65, fontSize / 3);
+    } else if (sector.label === 'FREE SPINS') {
+      // Gradient tekst (linear-gradient 180deg, #FF2AD5 → #C3009D)
+      const textGradient = ctx.createLinearGradient(0, -fontSize, 0, fontSize);
+      textGradient.addColorStop(0, '#FF2AD5');
+      textGradient.addColorStop(1, '#C3009D');
+      ctx.fillStyle = textGradient;
+      ctx.fillText(sector.label, rad * 0.65, fontSize / 3);
+    }
 
     ctx.restore();
   }
@@ -80,8 +93,6 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
 
     ang.current += angVel.current;
     ang.current %= TAU;
-
-    // uspori spin
     angVel.current *= 0.991;
 
     if (angVel.current < 0.002) {
@@ -95,15 +106,12 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
       }
 
       setWinner(result);
-
       if (result === 'FREE SPINS') {
         setTimeout(() => onOpen(), 100);
       }
-
       setSpinsLeft((prev) => prev - 1);
       setIsSpinning(false);
     }
-
     rotate(ctx);
   }
 
@@ -118,10 +126,25 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const rad = canvas.width / 2;
-    sectors.forEach((sector, i) => drawSector(ctx, sector, i, rad));
-    rotate(ctx);
+    // uvijek se prilagodi roditelju
+    const resize = () => {
+      const size = Math.min(canvas.parentElement!.offsetWidth, 500); // max 500px
+      canvas.width = size;
+      canvas.height = size;
+
+      const rad = size / 2;
+      ctx.clearRect(0, 0, size, size);
+      sectors.forEach((sector, i) => drawSector(ctx, sector, i, rad));
+      rotate(ctx);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
     engine(ctx);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
   }, []);
 
   const spin = () => {
@@ -135,15 +158,13 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
       position="relative"
       w="100%"
       maxW="500px"
-      aspectRatio="1 / 1"
+      aspectRatio="1/1"
       mx="auto"
       mb="60px"
     >
       {/* Wheel */}
       <canvas
         ref={canvasRef}
-        width={800}
-        height={800}
         style={{
           width: '100%',
           height: '100%',
@@ -199,33 +220,32 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         <SpinButton />
       </Box>
 
-      {/* Pointer iz public/ */}
+      {/* Pointer */}
       <img
         src="/Group.svg"
         alt="pointer"
         style={{
           position: 'absolute',
-          top: '-20px',
+          top: '-5%',
           left: '50%',
           transform: 'translateX(-50%)',
-          width: '56px',
-          height: '56px',
+          width: '12%',
+          height: 'auto',
         }}
       />
 
-      {/* Winning Modal */}
+      {/* Modal */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay bg="rgba(0,0,0,0.7)" />
         <ModalContent
           position="relative"
-          w="375px"
-          h="485px"
-          top="180px"
-          left="8px"
+          w="90%"
+          maxW="375px"
+          h="auto"
+          py={6}
           bg="transparent"
           boxShadow="none"
         >
-          {/* Background frame */}
           <Box
             as="img"
             src="/WinningModal.png"
@@ -239,7 +259,6 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             pointerEvents="none"
           />
 
-          {/* Content inside */}
           <Box
             position="relative"
             w="100%"
@@ -252,12 +271,12 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             color="white"
             px={6}
           >
-            <Text fontSize="20px" fontWeight="bold" mb={2}>
+            <Text fontSize={['16px', '20px']} fontWeight="bold" mb={2}>
               CONGRATULATIONS YOU WON:
             </Text>
 
             <Text
-              fontSize="64px"
+              fontSize={['40px', '64px']}
               fontWeight="extrabold"
               color="pink.200"
               lineHeight="1"
@@ -265,7 +284,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
               {winner === 'FREE SPINS' ? '5' : ''}
             </Text>
 
-            <Text fontSize="28px" fontWeight="bold" mb={6}>
+            <Text fontSize={['20px', '28px']} fontWeight="bold" mb={6}>
               {winner}
             </Text>
 

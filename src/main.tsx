@@ -21,29 +21,30 @@ const App: React.FC = () => {
         bgPos="center"
         bgRepeat="no-repeat"
       >
-        {/* Likovi sa strane */}
+        {/* Lik lijevo */}
         <Image
           src="/character-left.png"
           alt="Character Left"
           position="absolute"
-          left="140px"
-          bottom="-100px"
-          maxW="631px"
-          maxH="1036px"
+          left={['-80px', '-40px', '20px', '140px']} // mobile → desktop
+          bottom={['-60px', '-80px', '-100px', '-100px']}
+          w={['0px', '120px', '240px', '400px']} // na najmanjem ekranu nestaje
+          display={['none', 'block']} // sakrij na najmanjem
           objectFit="contain"
-          sx={{ aspectRatio: '631 / 1036' }}
+          pointerEvents="none"
         />
 
+        {/* Lik desno */}
         <Image
           src="/rightcarachter.png"
           alt="Character Right"
           position="absolute"
-          right="100px"
-          bottom="-100px"
-          maxW="651px"
-          maxH="1069px"
+          right={['-80px', '-40px', '20px', '100px']}
+          bottom={['-60px', '-80px', '-100px', '-100px']}
+          w={['0px', '120px', '240px', '400px']}
+          display={['none', 'block']}
           objectFit="contain"
-          sx={{ aspectRatio: '651 / 1069' }}
+          pointerEvents="none"
         />
 
         {/* Centrirani container za banner i wheel */}
@@ -55,11 +56,18 @@ const App: React.FC = () => {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          gap="40px" // razmak između bannera i wheel-a
+          gap={['16px', '24px', '32px', '40px']}
+          w="100%"
+          maxW="600px"
+          px={[2, 4, 6]} // padding za male ekrane
         >
           <SpinsBanner spinsLeft={spinsLeft} />
 
-          <Box w={['200px', '300px', '400px']} h={['200px', '300px', '400px']}>
+          {/* Wheel wrapper – responsive veličine */}
+          <Box
+            w={['200px', '260px', '340px', '420px']}
+            h={['200px', '260px', '340px', '420px']}
+          >
             <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
           </Box>
         </Box>
