@@ -16,152 +16,137 @@ interface WheelProps {
 }
 
 const sectors = [
-  { label: 'FREE SPINS', gradient: ['#FFAAE5', '#F5D4EB'] },
-  { label: 'TRY AGAIN', gradient: ['#F027C8', '#E000B4'] },
-  { label: 'FREE SPINS', gradient: ['#FFAAE5', '#F5D4EB'] },
-  { label: 'TRY AGAIN', gradient: ['#F027C8', '#E000B4'] },
-  { label: 'FREE SPINS', gradient: ['#FFAAE5', '#F5D4EB'] },
-  { label: 'TRY AGAIN', gradient: ['#F027C8', '#E000B4'] },
+  { label: 'FREE SPINS', color: '#FFAAE5' },
+  { label: 'TRY AGAIN', color: '#F027C8' },
+  { label: 'FREE SPINS', color: '#F5D4EB' },
+  { label: 'TRY AGAIN', color: '#E000B4' },
+  { label: 'FREE SPINS', color: '#FFAAE5' },
+  { label: 'TRY AGAIN', color: '#F027C8' },
 ];
 
 const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [winner, setWinner] = useState<string | null>(null);
-
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [angle, setAngle] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [spinCount, setSpinCount] = useState(0);
+  const [claimed, setClaimed] = useState(false);
 
-  const PI = Math.PI;
-  const TAU = 2 * PI;
-  const arc = TAU / sectors.length;
+  const sliceAngle = (2 * Math.PI) / sectors.length;
 
-  const ang = useRef(0);
-  const angVel = useRef(0);
-
-  const rand = (m: number, M: number) => Math.random() * (M - m) + m;
-
-  function drawSector(
-    ctx: CanvasRenderingContext2D,
-    sector: any,
-    i: number,
-    rad: number
-  ) {
-    const angSector = arc * i;
-    ctx.save();
-    ctx.beginPath();
-
-    const gradient = ctx.createLinearGradient(0, 0, 0, rad * 2);
-    gradient.addColorStop(0, sector.gradient[0]);
-    gradient.addColorStop(1, sector.gradient[1]);
-    ctx.fillStyle = gradient;
-
-    ctx.moveTo(rad, rad);
-    ctx.arc(rad, rad, rad, angSector, angSector + arc);
-    ctx.lineTo(rad, rad);
-    ctx.fill();
-
-    // tekst
-    ctx.translate(rad, rad);
-    ctx.rotate(angSector + arc / 2);
-    ctx.textAlign = 'center';
-
-    const fontSize = Math.floor(rad * 0.08);
-    ctx.font = `800 ${fontSize}px Jost, sans-serif`;
-
-    if (sector.label === 'TRY AGAIN') {
-      ctx.fillStyle = '#FFF';
-      ctx.fillText(sector.label, rad * 0.65, fontSize / 3);
-    } else if (sector.label === 'FREE SPINS') {
-      const textGradient = ctx.createLinearGradient(0, -fontSize, 0, fontSize);
-      textGradient.addColorStop(0, '#FF2AD5');
-      textGradient.addColorStop(1, '#C3009D');
-      ctx.fillStyle = textGradient;
-      ctx.fillText(sector.label, rad * 0.65, fontSize / 3);
-    }
-
-    ctx.restore();
-  }
-
-  function rotate(ctx: CanvasRenderingContext2D) {
-    ctx.canvas.style.transform = `rotate(${ang.current - PI / 2}rad)`;
-  }
-
-  function frame(ctx: CanvasRenderingContext2D) {
-    if (!angVel.current) return;
-
-    ang.current += angVel.current;
-    ang.current %= TAU;
-    angVel.current *= 0.991;
-
-    if (angVel.current < 0.002) {
-      angVel.current = 0;
-
-      let result: string;
-      if (spinsLeft === 2) {
-        result = 'TRY AGAIN';
-      } else {
-        result = 'FREE SPINS';
-      }
-
-      setWinner(result);
-      if (result === 'FREE SPINS') {
-        setTimeout(() => onOpen(), 100);
-      }
-      setSpinsLeft((prev) => prev - 1);
-      setIsSpinning(false);
-    }
-    rotate(ctx);
-  }
-
-  function engine(ctx: CanvasRenderingContext2D) {
-    frame(ctx);
-    requestAnimationFrame(() => engine(ctx));
-  }
-
-  useEffect(() => {
+  // crtanje kola
+  const drawWheel = (rotation: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const resize = () => {
-      const size = canvas.parentElement!.offsetWidth; // full parent size
-      canvas.width = size;
-      canvas.height = size;
+    const size = canvas.width;
+    const radius = size / 2;
+    const centerX = size / 2;
+    const centerY = size / 2;
 
-      const rad = size / 2;
-      ctx.clearRect(0, 0, size, size);
-      sectors.forEach((sector, i) => drawSector(ctx, sector, i, rad));
-      rotate(ctx);
-    };
+    ctx.clearRect(0, 0, size, size);
 
-    resize();
-    window.addEventListener('resize', resize);
-    engine(ctx);
+    sectors.forEach((sector, i) => {
+      const startAngle = i * sliceAngle + rotation;
+      const endAngle = startAngle + sliceAngle;
 
-    return () => {
-      window.removeEventListener('resize', resize);
-    };
-  }, []);
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+      ctx.closePath();
+      ctx.fillStyle = sector.color;
+      ctx.fill();
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+
+      const angleRad = startAngle + sliceAngle / 2;
+      const textRadius = radius - size / 4.5;
+      const x = Math.cos(angleRad) * textRadius;
+      const y = Math.sin(angleRad) * textRadius;
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#FFF';
+      const fontSize = size / 22;
+      ctx.font = `800 ${fontSize}px Jost`;
+
+      if (sector.label === 'TRY AGAIN') {
+        ctx.fillText('TRY', x, y - fontSize / 2);
+        ctx.fillText('AGAIN', x, y + fontSize / 1.2);
+      } else {
+        ctx.fillText('FREE', x, y - fontSize / 2);
+        ctx.fillText('SPINS', x, y + fontSize / 1.2);
+      }
+
+      ctx.restore();
+    });
+  };
+
+  useEffect(() => {
+    drawWheel(angle);
+  }, [angle]);
 
   const spin = () => {
-    if (isSpinning || spinsLeft <= 0) return;
+    if (spinsLeft <= 0 || isSpinning) return;
+
     setIsSpinning(true);
-    angVel.current = rand(0.25, 0.45);
+
+    const nextSpinCount = spinCount + 1;
+    setSpinCount(nextSpinCount);
+
+    let rotation = angle;
+    let frames = 0;
+
+    const isFirstSpin = nextSpinCount === 1;
+    const isSecondSpin = nextSpinCount === 2;
+
+    let targetIndex = isFirstSpin ? 1 : 0;
+    let targetAngle = targetIndex * sliceAngle;
+
+    if (isFirstSpin) {
+      targetAngle += sliceAngle / 6;
+    }
+
+    const pointerOffset = -Math.PI / 2;
+    const extraSpins = 5 * 2 * Math.PI;
+    const finalAngle = extraSpins + pointerOffset - targetAngle;
+
+    const interval = setInterval(() => {
+      frames++;
+      const progress = frames / 100;
+      rotation = angle + finalAngle * Math.sin((progress * Math.PI) / 2);
+      setAngle(rotation);
+
+      if (frames >= 100) {
+        clearInterval(interval);
+        setIsSpinning(false);
+        setSpinsLeft((prev) => prev - 1);
+
+        if (isSecondSpin) {
+          setTimeout(() => {
+            onOpen();
+          }, 500);
+        }
+      }
+    }, 20);
   };
 
   return (
     <Box
       position="relative"
       w="100%"
-      maxW={['300px', '400px', '500px']} // responsive max
+      maxW={['300px', '400px', '500px']}
       aspectRatio="1/1"
       mx="auto"
       mb={['20px', '40px', '60px']}
     >
-      {/* Wheel */}
+      {/* Canvas */}
       <canvas
         ref={canvasRef}
+        width={500}
+        height={500}
         style={{
           width: '100%',
           height: '100%',
@@ -231,15 +216,22 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         }}
       />
 
-      {/* Modal */}
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      {/* Winning Modal */}
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          setClaimed(false);
+          onClose();
+        }}
+        isCentered
+      >
         <ModalOverlay bg="rgba(0,0,0,0.7)" />
         <ModalContent
           position="relative"
-          w="90%"
-          maxW="375px"
+          w="95%"
+          maxW="480px"
           h="auto"
-          py={6}
+          py={8}
           bg="transparent"
           boxShadow="none"
         >
@@ -268,34 +260,64 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             color="white"
             px={6}
           >
-            <Text fontSize={['16px', '20px']} fontWeight="bold" mb={2}>
+            <Text fontSize={['18px', '22px']} fontWeight="bold" mb={2}>
               CONGRATULATIONS YOU WON:
             </Text>
-
             <Text
-              fontSize="clamp(2rem, 6vw, 4rem)"
+              fontSize="clamp(3rem, 7vw, 5rem)"
               fontWeight="extrabold"
               color="pink.200"
               lineHeight="1"
             >
-              {winner === 'FREE SPINS' ? '5' : ''}
+              5
+            </Text>
+            <Text fontSize={['22px', '32px']} fontWeight="bold" mb={6}>
+              FREE SPINS
             </Text>
 
-            <Text fontSize={['20px', '28px']} fontWeight="bold" mb={6}>
-              {winner}
-            </Text>
+            {claimed && (
+              <Box
+                border="2px dashed #FF2AD5"
+                borderRadius="12px"
+                py={3}
+                px={6}
+                fontSize="22px"
+                fontWeight="bold"
+                color="white"
+                mb={6}
+              >
+                "WHALE.IO"
+              </Box>
+            )}
 
-            <Button
-              bg="pink.500"
-              color="white"
-              size="lg"
-              borderRadius="full"
-              px={10}
-              onClick={onClose}
-              _hover={{ bg: 'pink.400' }}
-            >
-              CLAIM PRIZE
-            </Button>
+            {!claimed ? (
+              <Button
+                bg="pink.500"
+                color="white"
+                size="lg"
+                borderRadius="full"
+                px={10}
+                onClick={() => setClaimed(true)}
+                _hover={{ bg: 'pink.400' }}
+              >
+                CLAIM PRIZE
+              </Button>
+            ) : (
+              <Button
+                bg="pink.400"
+                color="white"
+                size="lg"
+                borderRadius="full"
+                px={10}
+                onClick={() => {
+                  navigator.clipboard.writeText('WHALE.IO');
+                  onClose();
+                }}
+                _hover={{ bg: 'pink.300' }}
+              >
+                COPY & CLAIM
+              </Button>
+            )}
           </Box>
         </ModalContent>
       </Modal>
