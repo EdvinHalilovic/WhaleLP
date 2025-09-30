@@ -47,23 +47,21 @@ const App: React.FC = () => {
           pointerEvents="none"
         />
 
-        {/* Centrirani container za banner i wheel */}
+        {/* Glavni container */}
         <Box
-          position="absolute"
-          top="50%"
-          left="50%"
-          transform="translate(-50%, -50%)"
+          position="relative"
           display="flex"
           flexDirection="column"
           alignItems="center"
+          justifyContent="flex-start"
+          w="100%"
+          h="100%"
+          pt="clamp(20px, 5vh, 60px)" // padding top da logo uvijek vidiš
           gap="clamp(16px, 4vw, 40px)"
-          w="90vw"
-          maxW="600px"
-          px={[2, 4, 6]}
         >
           <SpinsBanner spinsLeft={spinsLeft} />
 
-          {/* Wheel wrapper – potpuno responsive */}
+          {/* Wheel wrapper */}
           <Box w="clamp(200px, 40vw, 420px)" aspectRatio="1/1">
             <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
           </Box>
