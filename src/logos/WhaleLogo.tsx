@@ -8,31 +8,32 @@ interface WhaleLogoProps {
 }
 
 const WhaleLogo: React.FC<WhaleLogoProps> = ({
-  width = '180px',
-  height = '48px',
+  width = 'clamp(140px, 30vw, 200px)',
+  height = 'auto',
 }) => {
   return (
     <Flex
       direction="row"
       align="center"
       justify="center"
-      gap="12px"
+      gap="8px"
       width={width}
       height={height}
     >
-      {/* SVG logo iz public/logos/ */}
-      <Image src={keyMascot} alt="Whale Logo" width="44px" height="47px" />
-
-      {/* Tekst Whale.io */}
+      <Image
+        src={keyMascot}
+        alt="Whale Logo"
+        width="clamp(24px, 8vw, 44px)"
+        height="auto"
+      />
       <Text
         color="#FFF"
         textAlign="center"
-        textShadow="0 5.813px 5.813px rgba(0, 0, 0, 0.25)"
+        textShadow="0 5px 5px rgba(0, 0, 0, 0.25)"
         fontFamily="Jost"
-        fontSize="32px"
-        fontStyle="normal"
+        fontSize="clamp(16px, 4vw, 32px)"
         fontWeight="800"
-        lineHeight="36px"
+        lineHeight="1.2"
       >
         Whale.io
       </Text>
