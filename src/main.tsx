@@ -10,7 +10,6 @@ const App: React.FC = () => {
 
   return (
     <ChakraProvider>
-      {/* Fullscreen container */}
       <Box
         w="100vw"
         h="100vh"
@@ -47,22 +46,26 @@ const App: React.FC = () => {
           pointerEvents="none"
         />
 
-        {/* Glavni container */}
+        {/* Centrirani container */}
         <Box
-          position="relative"
+          position="absolute"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
           display="flex"
           flexDirection="column"
           alignItems="center"
-          justifyContent="flex-start"
-          w="100%"
-          h="100%"
-          pt="clamp(20px, 5vh, 60px)" // padding top da logo uvijek vidiš
-          gap="clamp(16px, 4vw, 40px)"
+          justifyContent="center"
+          gap="clamp(20px, 5vh, 40px)" // razmak između banner i wheel
+          w="90vw"
+          maxW="600px"
+          px={[2, 4, 6]}
         >
+          {/* Banner gore */}
           <SpinsBanner spinsLeft={spinsLeft} />
 
-          {/* Wheel wrapper */}
-          <Box w="clamp(200px, 40vw, 420px)" aspectRatio="1/1">
+          {/* Wheel odmah ispod */}
+          <Box w="clamp(220px, 42vw, 440px)" aspectRatio="1/1">
             <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
           </Box>
         </Box>
