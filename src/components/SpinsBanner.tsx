@@ -18,7 +18,17 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
       }}
     >
       {/* Whale logo */}
-      <WhaleLogo width="clamp(120px, 25vw, 200px)" height="auto" />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: 'clamp(12px, 4vh, 40px)',
+          marginBottom: 'clamp(8px, 3vh, 24px)',
+          width: '100%',
+        }}
+      >
+        <WhaleLogo />
+      </div>
 
       {/* Tekst YOU GOT */}
       <div
