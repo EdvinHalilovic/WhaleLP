@@ -8,7 +8,7 @@ interface WhaleLogoProps {
 }
 
 const WhaleLogo: React.FC<WhaleLogoProps> = ({
-  width = 'auto',
+  width = 'clamp(160px, 40vw, 260px)', // default širina responsivna
   height = 'auto',
 }) => {
   return (
@@ -16,17 +16,15 @@ const WhaleLogo: React.FC<WhaleLogoProps> = ({
       direction="row"
       align="center"
       justify="center"
-      gap="clamp(4px, 1.5vw, 12px)" // fleksibilan razmak između ikone i teksta
+      gap="clamp(6px, 1.5vw, 14px)" // razmak ikona ↔ tekst
       width={width}
       height={height}
       flexShrink={0}
-      mt="clamp(12px, 4vh, 40px)" // gornji razmak (da logo ne zalijepi uz rub)
-      mb="clamp(8px, 3vh, 24px)" // donji razmak prije "YOU GOT"
     >
       <Image
         src={keyMascot}
         alt="Whale Logo"
-        width="clamp(24px, 7vw, 44px)" // ikona skalira s ekranom
+        width="clamp(28px, 8vw, 48px)" // ikonica skalira
         height="auto"
         flexShrink={0}
         objectFit="contain"
@@ -36,12 +34,11 @@ const WhaleLogo: React.FC<WhaleLogoProps> = ({
         textAlign="center"
         textShadow="0 4px 4px rgba(0, 0, 0, 0.25)"
         fontFamily="Jost, sans-serif"
-        fontSize="clamp(16px, 4vw, 32px)" // tekst fleksibilan
+        fontSize="clamp(18px, 4vw, 34px)" // tekst fleksibilan
         fontWeight="800"
         lineHeight="1.2"
         letterSpacing="0.02em"
-        whiteSpace="nowrap" // da ostane u jednom redu
-        flexGrow={1}
+        whiteSpace="nowrap" // sprječava prelamanje
       >
         Whale.io
       </Text>
