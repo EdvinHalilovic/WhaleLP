@@ -27,10 +27,11 @@ const App: React.FC = () => {
           alt="Character Left"
           position="absolute"
           left="50px"
-          bottom="-200px"
-          width={['200px', '400px', '631px']}
-          height="auto"
+          bottom="0"
+          maxW="631px"
+          maxH="1036px"
           objectFit="contain"
+          sx={{ aspectRatio: '631 / 1036' }}
         />
 
         <Image
@@ -38,14 +39,11 @@ const App: React.FC = () => {
           alt="Character Right"
           position="absolute"
           right="50px"
-          bottom="-400px"
-          width="651px"
-          height="1069px"
+          bottom="0"
+          maxW="651px"
+          maxH="1069px"
           objectFit="contain"
-          sx={{
-            aspectRatio: '651 / 1069',
-            flexShrink: 0,
-          }}
+          sx={{ aspectRatio: '651 / 1069' }}
         />
 
         {/* Centrirani container za banner i wheel */}
