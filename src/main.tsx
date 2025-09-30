@@ -27,7 +27,7 @@ const App: React.FC = () => {
           alt="Character Left"
           position="absolute"
           left="50px"
-          bottom="-370px"
+          bottom="-200px"
           width={['200px', '400px', '631px']}
           height="auto"
           objectFit="contain"
@@ -38,7 +38,7 @@ const App: React.FC = () => {
           alt="Character Right"
           position="absolute"
           right="50px"
-          bottom="-314px"
+          bottom="-400px"
           width="651px"
           height="1069px"
           objectFit="contain"
