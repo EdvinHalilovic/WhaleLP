@@ -13,12 +13,24 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 'clamp(1rem, 3vw, 2rem)', // fleksibilan razmak
+        gap: 'clamp(1rem, 3vw, 2rem)',
         width: '100%',
       }}
     >
       {/* Whale logo */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: 'clamp(12px, 4vh, 40px)',
+          marginBottom: 'clamp(8px, 3vh, 24px)',
+          width: '100%',
+        }}
+      >
+        <WhaleLogo width="clamp(120px, 25vw, 180px)" height="auto" />
+      </div>
 
+      {/* Tekst YOU GOT */}
       <div
         style={{
           color: '#FFF',
@@ -43,7 +55,7 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
         <div
           style={{
             width: 'clamp(200px, 80%, 430px)',
-            maxWidth: '90vw', // da nikad ne pređe ekran
+            maxWidth: '90vw',
             aspectRatio: '43 / 8',
             backgroundImage: `url(${splash})`,
             backgroundSize: '100% 100%',
@@ -59,7 +71,7 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
               width: '100%',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap', // ako želiš da puca na malom, promijeni u 'normal'
+              whiteSpace: 'nowrap',
               color: '#FFF',
               textAlign: 'center',
               textShadow: '0 5px 5px rgba(0, 0, 0, 0.25)',
