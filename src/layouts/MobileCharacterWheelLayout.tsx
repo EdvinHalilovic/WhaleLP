@@ -2,12 +2,12 @@ import React from 'react';
 import { Box, Flex, Image } from '@chakra-ui/react';
 import Wheel from '../components/Wheel';
 
-interface Props {
+interface MobileCharacterWheelLayoutProps {
   spinsLeft: number;
   setSpinsLeft: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const MobileCharacterWheelLayout: React.FC<Props> = ({
+const MobileCharacterWheelLayout: React.FC<MobileCharacterWheelLayoutProps> = ({
   spinsLeft,
   setSpinsLeft,
 }) => {
@@ -15,36 +15,31 @@ const MobileCharacterWheelLayout: React.FC<Props> = ({
     <Flex
       direction="column"
       align="center"
-      justify="center"
-      gap="clamp(1rem, 4vh, 2rem)" // razmak između karaktera i wheela
+      justify="flex-start"
       w="100%"
+      h="100%"
+      position="relative"
+      overflow="hidden"
     >
       {/* Character */}
-      <Box
-        width="clamp(200px, 70vw, 390px)" // skaluje se od min 200px do max 390px
-        aspectRatio="759 / 827" // originalni omjer slike iz Figma
-        flexShrink={0}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Image
-          src="/MobileLayoutCharacter.png" // iz public foldera
-          alt="Character"
-          objectFit="contain"
-          width="100%"
-          height="100%"
-        />
-      </Box>
+      <Image
+        src="/MobileLayoutCharacter.png" // tvoja slika iz public/
+        alt="Character"
+        objectFit="contain"
+        w="100%"
+        maxW="420px"
+        zIndex={1}
+      />
 
-      {/* Wheel */}
+      {/* Wheel preko lika */}
       <Box
-        width="clamp(220px, 75vw, 358px)" // prema Figma: 358x358, ali responsive
-        aspectRatio="1 / 1"
-        flexShrink={0}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
+        position="absolute"
+        bottom="0"
+        left="50%"
+        transform="translateX(-50%)"
+        w="clamp(280px, 80vw, 420px)"
+        aspectRatio="1/1"
+        zIndex={2}
       >
         <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
       </Box>
