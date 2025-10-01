@@ -99,13 +99,10 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
     let rotation = angle;
     let frames = 0;
 
-    const isFirstSpin = nextSpinCount === 1;
-    const isSecondSpin = nextSpinCount === 2;
-
-    let targetIndex = isFirstSpin ? 1 : 0;
+    let targetIndex = nextSpinCount === 1 ? 1 : 0;
     let targetAngle = targetIndex * sliceAngle;
 
-    if (isFirstSpin) {
+    if (nextSpinCount === 1) {
       targetAngle += sliceAngle / 6;
     }
 
@@ -124,10 +121,11 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         setIsSpinning(false);
         setSpinsLeft((prev) => prev - 1);
 
-        if (isSecondSpin) {
+        // 🔑 Sada tek ovdje pozivamo modal nakon drugog spina
+        if (nextSpinCount === 2) {
           setTimeout(() => {
             onOpen();
-          }, 500);
+          }, 750);
         }
       }
     }, 20);

@@ -31,7 +31,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
       bgSize="cover"
       bgPos="center"
       bgRepeat="no-repeat"
-      overflow="hidden"
+      overflow="visible"
     >
       <Flex
         direction="column"
