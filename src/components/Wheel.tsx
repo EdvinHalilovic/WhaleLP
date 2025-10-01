@@ -121,7 +121,6 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         setIsSpinning(false);
         setSpinsLeft((prev) => prev - 1);
 
-        // 🔑 Sada tek ovdje pozivamo modal nakon drugog spina
         if (nextSpinCount === 2) {
           setTimeout(() => {
             onOpen();
@@ -215,6 +214,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
       />
 
       {/* Winning Modal */}
+      {/* Winning Modal */}
       <Modal
         isOpen={isOpen}
         onClose={() => {
@@ -224,15 +224,20 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         isCentered
       >
         <ModalOverlay bg="rgba(0,0,0,0.7)" />
+
         <ModalContent
           position="relative"
-          w="95%"
+          w={['90%', '90%', '480px']} // mobile/tablet/desktop
           maxW="480px"
           h="auto"
-          py={8}
-          bg="transparent"
+          py={[6, 6, 8]}
+          px={[4, 4, 8]}
+          borderRadius={['24px', '32px', 'none']} // mobile zaobljeno, desktop flat
+          bg={['rgba(81,0,58,0.60)', 'rgba(81,0,58,0.60)', 'transparent']}
+          backdropFilter={['blur(12px)', 'blur(12px)', 'none']}
           boxShadow="none"
         >
+          {/* Background frame samo za desktop */}
           <Box
             as="img"
             src="/WinningModal.png"
@@ -244,6 +249,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             h="100%"
             objectFit="contain"
             pointerEvents="none"
+            display={['none', 'none', 'block']}
           />
 
           <Box
@@ -256,20 +262,19 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             justifyContent="center"
             textAlign="center"
             color="white"
-            px={6}
           >
-            <Text fontSize={['18px', '22px']} fontWeight="bold" mb={2}>
+            <Text fontSize={['16px', '18px', '22px']} fontWeight="bold" mb={2}>
               CONGRATULATIONS YOU WON:
             </Text>
             <Text
-              fontSize="clamp(3rem, 7vw, 5rem)"
+              fontSize={['2.5rem', '3rem', '5rem']}
               fontWeight="extrabold"
               color="pink.200"
               lineHeight="1"
             >
               5
             </Text>
-            <Text fontSize={['22px', '32px']} fontWeight="bold" mb={6}>
+            <Text fontSize={['20px', '24px', '32px']} fontWeight="bold" mb={6}>
               FREE SPINS
             </Text>
 
@@ -279,7 +284,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
                 borderRadius="12px"
                 py={3}
                 px={6}
-                fontSize="22px"
+                fontSize={['18px', '20px', '22px']}
                 fontWeight="bold"
                 color="white"
                 mb={6}
