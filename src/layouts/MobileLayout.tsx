@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
-import MobileWhaleLogo from './MobileWhaleLogo';
+
 import MobileSpinsBanner from './MobileSpinsBanner';
 
 const MobileLayout: React.FC = () => {
@@ -26,7 +26,7 @@ const MobileLayout: React.FC = () => {
         gap="clamp(1rem, 4vh, 2rem)"
       >
         {/* Logo i banner */}
-        <MobileWhaleLogo />
+
         <MobileSpinsBanner spinsLeft={spinsLeft} />
 
         {/* Ovdje kasnije ide wheel, dugmad, itd. */}
