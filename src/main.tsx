@@ -6,9 +6,10 @@ import Wheel from './components/Wheel';
 import SpinsBanner from './components/SpinsBanner';
 import MobileLayout from './layouts/MobileLayout';
 
-const DesktopApp: React.FC = () => {
-  const [spinsLeft, setSpinsLeft] = useState(2);
-
+const DesktopApp: React.FC<{
+  spinsLeft: number;
+  setSpinsLeft: React.Dispatch<React.SetStateAction<number>>;
+}> = ({ spinsLeft, setSpinsLeft }) => {
   return (
     <Box
       w="100vw"
@@ -56,7 +57,7 @@ const DesktopApp: React.FC = () => {
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        gap="clamp(20px, 5vh, 40px)" // razmak između banner i wheel
+        gap="clamp(20px, 5vh, 40px)"
         w="90vw"
         maxW="600px"
         px={[2, 4, 6]}
@@ -64,9 +65,9 @@ const DesktopApp: React.FC = () => {
         {/* Banner gore */}
         <SpinsBanner spinsLeft={spinsLeft} />
 
-        {/* Wheel odmah ispod */}
+        {/* Wheel ispod */}
         <Box
-          w="clamp(220px, 45vw, 440px)" // od 220px do 440px
+          w="clamp(220px, 45vw, 440px)"
           minW="200px"
           maxW="480px"
           aspectRatio="1/1"
@@ -79,6 +80,7 @@ const DesktopApp: React.FC = () => {
 };
 
 const Root = () => {
+  const [spinsLeft, setSpinsLeft] = useState(2);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
@@ -91,7 +93,11 @@ const Root = () => {
 
   return (
     <ChakraProvider>
-      {isMobile ? <MobileLayout spinsLeft={2} /> : <DesktopApp />}
+      {isMobile ? (
+        <MobileLayout />
+      ) : (
+        <DesktopApp spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+      )}
     </ChakraProvider>
   );
 };

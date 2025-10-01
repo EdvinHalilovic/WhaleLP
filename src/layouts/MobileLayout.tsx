@@ -1,44 +1,36 @@
-import React from 'react';
-import { Box } from '@chakra-ui/react';
-import SpinsBanner from '../components/SpinsBanner';
+import React, { useState } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+import MobileWhaleLogo from './MobileWhaleLogo';
+import MobileSpinsBanner from './MobileSpinsBanner';
 
-interface MobileLayoutProps {
-  spinsLeft: number;
-}
+const MobileLayout: React.FC = () => {
+  // Broj spinova koji ostaje – kontrolisan iz parenta ili state-a
+  const [spinsLeft] = useState(2);
 
-const MobileLayout: React.FC<MobileLayoutProps> = ({ spinsLeft }) => {
   return (
     <Box
       w="100vw"
       h="100vh"
-      position="relative"
-      overflow="hidden"
-      bgImage="url('/mobile-bg.png')" // tvoj background iz public/
+      bgImage="url('/background.jpg')" // možeš zamijeniti ako imaš drugi bg za mobile
       bgSize="cover"
       bgPos="center"
-      bgRepeat="no-repeat"
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
+      overflow="hidden"
     >
-      {/* Overlay rectangle iz Figma */}
-      <Box
+      <Flex
+        direction="column"
+        align="center"
+        justify="flex-start"
         w="100%"
-        maxW="390px"
-        h="240px"
-        flexShrink={0}
-        opacity={0.7}
-        bgGradient="linear(180deg, #000 0%, rgba(0,0,0,0) 100%)"
-        position="absolute"
-        top={0}
-        left="50%"
-        transform="translateX(-50%)"
-      />
+        h="100%"
+        p="clamp(0.5rem, 3vw, 1rem)" // malo paddinga responsivno
+        gap="clamp(1rem, 4vh, 2rem)"
+      >
+        {/* Logo i banner */}
+        <MobileWhaleLogo />
+        <MobileSpinsBanner spinsLeft={spinsLeft} />
 
-      {/* SpinsBanner */}
-      <Box mt="16px" w="100%" display="flex" justifyContent="center">
-        <SpinsBanner spinsLeft={spinsLeft} />
-      </Box>
+        {/* Ovdje kasnije ide wheel, dugmad, itd. */}
+      </Flex>
     </Box>
   );
 };
