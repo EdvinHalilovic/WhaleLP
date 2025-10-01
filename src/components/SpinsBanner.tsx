@@ -13,7 +13,7 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 'clamp(1rem, 3vw, 2rem)',
+        gap: 'clamp(0.75rem, 2vh, 1.5rem)', // razmak fleksibilan
         width: '100%',
       }}
     >
@@ -22,12 +22,12 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
         style={{
           display: 'flex',
           justifyContent: 'center',
-          marginTop: 'clamp(12px, 4vh, 40px)',
-          marginBottom: 'clamp(8px, 3vh, 24px)',
+          marginTop: 'clamp(8px, 2vh, 24px)', // manji top margin
+          marginBottom: 'clamp(8px, 2vh, 20px)',
           width: '100%',
         }}
       >
-        <WhaleLogo width="clamp(120px, 25vw, 180px)" height="auto" />
+        <WhaleLogo width="clamp(100px, 22vw, 160px)" height="auto" />
       </div>
 
       {/* Tekst YOU GOT */}
@@ -35,7 +35,7 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
         style={{
           color: '#FFF',
           textAlign: 'center',
-          fontSize: 'clamp(16px, 3.5vw, 32px)',
+          fontSize: 'clamp(1rem, 2.5vw, 1.8rem)', // 16px → 28px
           fontWeight: 800,
           lineHeight: 1.2,
           textShadow: '0 2px 4px rgba(0,0,0,0.3)',
@@ -54,7 +54,7 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
       >
         <div
           style={{
-            width: 'clamp(200px, 80%, 430px)',
+            width: 'clamp(200px, 75%, 420px)',
             maxWidth: '90vw',
             aspectRatio: '43 / 8',
             backgroundImage: `url(${splash})`,
@@ -63,7 +63,7 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '0 10px',
+            padding: '0 0.5rem',
           }}
         >
           <span
@@ -76,7 +76,7 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
               textAlign: 'center',
               textShadow: '0 5px 5px rgba(0, 0, 0, 0.25)',
               fontFamily: 'Jost, sans-serif',
-              fontSize: 'clamp(14px, 4vw, 28px)',
+              fontSize: 'clamp(0.9rem, 3.5vw, 1.6rem)', // 14px → 26px
               fontWeight: 800,
               lineHeight: 1.2,
               flexShrink: 1,

@@ -8,7 +8,7 @@ interface WhaleLogoProps {
 }
 
 const WhaleLogo: React.FC<WhaleLogoProps> = ({
-  width = 'clamp(100px, 25vw, 150px)', // manji default width
+  width = 'clamp(8rem, 20vw, 12rem)', // skaluje od ~128px do ~192px
   height = 'auto',
 }) => {
   return (
@@ -16,25 +16,28 @@ const WhaleLogo: React.FC<WhaleLogoProps> = ({
       direction="row"
       align="center"
       justify="center"
-      gap="clamp(4px, 1vw, 10px)" // manji razmak ikona ↔ tekst
+      gap="clamp(0.25rem, 1vw, 0.75rem)" // razmak se prilagođava
       width={width}
       height={height}
       flexShrink={0}
     >
+      {/* Ikonica */}
       <Image
         src={keyMascot}
         alt="Whale Logo"
-        width="clamp(22px, 6vw, 34px)" // manja ikonica
+        width="clamp(1.5rem, 5vw, 2.5rem)" // min 24px, max ~40px
         height="auto"
         flexShrink={0}
         objectFit="contain"
       />
+
+      {/* Tekst */}
       <Text
         color="#FFF"
         textAlign="center"
         textShadow="0 4px 4px rgba(0, 0, 0, 0.25)"
         fontFamily="Jost, sans-serif"
-        fontSize="clamp(14px, 3vw, 26px)" // manji tekst
+        fontSize="clamp(1rem, 3vw, 1.6rem)" // min 16px, max ~25px
         fontWeight="800"
         lineHeight="1.2"
         letterSpacing="0.02em"

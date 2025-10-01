@@ -4,10 +4,10 @@ import React from 'react';
 const SpinButton = () => {
   return (
     <Box
-      w="148px"
-      h="148px"
+      w="clamp(100px, 18vw, 150px)" // min 100px, raste sa ekranom do max 150px
+      h="clamp(100px, 18vw, 150px)"
       borderRadius="full"
-      border="8px solid #FFF"
+      border="clamp(4px, 1vw, 8px) solid #FFF"
       overflow="hidden"
       display="flex"
       alignItems="center"
@@ -42,11 +42,11 @@ const SpinButton = () => {
         color="#FFF"
         textShadow="0 0 24px rgba(0, 0, 0, 0.80)"
         fontFamily="Jost, sans-serif"
-        fontSize="36px"
+        fontSize="clamp(18px, 4vw, 36px)" // tekst od 18px do 36px
         fontWeight="800"
-        lineHeight="48px"
+        lineHeight="1.2"
         textAlign="center"
-        zIndex={1} // da bude iznad backgrounda
+        zIndex={1}
       >
         SPIN
       </Text>

@@ -65,7 +65,12 @@ const App: React.FC = () => {
           <SpinsBanner spinsLeft={spinsLeft} />
 
           {/* Wheel odmah ispod */}
-          <Box w="clamp(220px, 42vw, 440px)" aspectRatio="1/1">
+          <Box
+            w="clamp(220px, 45vw, 440px)" // od 220px do 440px
+            minW="200px"
+            maxW="480px"
+            aspectRatio="1/1"
+          >
             <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
           </Box>
         </Box>
