@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import MobileSpinsBanner from './MobileSpinsBanner';
 import MobileCharacterWheelLayout from './MobileCharacterWheelLayout';
@@ -12,11 +12,21 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
   spinsLeft,
   setSpinsLeft,
 }) => {
+  // FIX za iOS Safari height
+  useEffect(() => {
+    const setAppHeight = () => {
+      const doc = document.documentElement;
+      doc.style.setProperty('--app-height', `${window.innerHeight}px`);
+    };
+    setAppHeight();
+    window.addEventListener('resize', setAppHeight);
+    return () => window.removeEventListener('resize', setAppHeight);
+  }, []);
+
   return (
     <Box
       w="100vw"
-      minH="100vh" // fallback za starije browsere i iOS bagove
-      minHeight="100dvh" // modern viewport visina (iOS 15+)
+      minH="var(--app-height)" // koristi custom visinu koja je tačna
       bgImage="url('/background.jpg')"
       bgSize="cover"
       bgPos="center"
