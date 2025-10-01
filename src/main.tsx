@@ -1,86 +1,103 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ChakraProvider, Box, Image } from '@chakra-ui/react';
 
 import Wheel from './components/Wheel';
 import SpinsBanner from './components/SpinsBanner';
+import MobileLayout from './layouts/MobileLayout';
 
-const App: React.FC = () => {
+const DesktopApp: React.FC = () => {
   const [spinsLeft, setSpinsLeft] = useState(2);
 
   return (
-    <ChakraProvider>
+    <Box
+      w="100vw"
+      h="100vh"
+      position="relative"
+      overflow="hidden"
+      bgImage="url('/background.jpg')"
+      bgSize="cover"
+      bgPos="center"
+      bgRepeat="no-repeat"
+    >
+      {/* Lik lijevo */}
+      <Image
+        src="/character-left.png"
+        alt="Character Left"
+        position="absolute"
+        left={['-60px', '-40px', '20px', '100px']}
+        bottom={['-40px', '-60px', '-80px', '-100px']}
+        w="clamp(120px, 20vw, 400px)"
+        display={['none', 'block']}
+        objectFit="contain"
+        pointerEvents="none"
+      />
+
+      {/* Lik desno */}
+      <Image
+        src="/rightcarachter.png"
+        alt="Character Right"
+        position="absolute"
+        right={['-60px', '-40px', '20px', '100px']}
+        bottom={['-40px', '-60px', '-80px', '-100px']}
+        w="clamp(120px, 20vw, 400px)"
+        display={['none', 'block']}
+        objectFit="contain"
+        pointerEvents="none"
+      />
+
+      {/* Centrirani container */}
       <Box
-        w="100vw"
-        h="100vh"
-        position="relative"
-        overflow="hidden"
-        bgImage="url('/background.jpg')"
-        bgSize="cover"
-        bgPos="center"
-        bgRepeat="no-repeat"
+        position="absolute"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        gap="clamp(20px, 5vh, 40px)" // razmak između banner i wheel
+        w="90vw"
+        maxW="600px"
+        px={[2, 4, 6]}
       >
-        {/* Lik lijevo */}
-        <Image
-          src="/character-left.png"
-          alt="Character Left"
-          position="absolute"
-          left={['-60px', '-40px', '20px', '100px']}
-          bottom={['-40px', '-60px', '-80px', '-100px']}
-          w="clamp(120px, 20vw, 400px)"
-          display={['none', 'block']}
-          objectFit="contain"
-          pointerEvents="none"
-        />
+        {/* Banner gore */}
+        <SpinsBanner spinsLeft={spinsLeft} />
 
-        {/* Lik desno */}
-        <Image
-          src="/rightcarachter.png"
-          alt="Character Right"
-          position="absolute"
-          right={['-60px', '-40px', '20px', '100px']}
-          bottom={['-40px', '-60px', '-80px', '-100px']}
-          w="clamp(120px, 20vw, 400px)"
-          display={['none', 'block']}
-          objectFit="contain"
-          pointerEvents="none"
-        />
-
-        {/* Centrirani container */}
+        {/* Wheel odmah ispod */}
         <Box
-          position="absolute"
-          top="50%"
-          left="50%"
-          transform="translate(-50%, -50%)"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          gap="clamp(20px, 5vh, 40px)" // razmak između banner i wheel
-          w="90vw"
-          maxW="600px"
-          px={[2, 4, 6]}
+          w="clamp(220px, 45vw, 440px)" // od 220px do 440px
+          minW="200px"
+          maxW="480px"
+          aspectRatio="1/1"
         >
-          {/* Banner gore */}
-          <SpinsBanner spinsLeft={spinsLeft} />
-
-          {/* Wheel odmah ispod */}
-          <Box
-            w="clamp(220px, 45vw, 440px)" // od 220px do 440px
-            minW="200px"
-            maxW="480px"
-            aspectRatio="1/1"
-          >
-            <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
-          </Box>
+          <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
         </Box>
       </Box>
+    </Box>
+  );
+};
+
+const Root = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return (
+    <ChakraProvider>
+      {isMobile ? <MobileLayout spinsLeft={2} /> : <DesktopApp />}
     </ChakraProvider>
   );
 };
 
 ReactDOM.createRoot(document.getElementById('app') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <Root />
   </React.StrictMode>
 );
