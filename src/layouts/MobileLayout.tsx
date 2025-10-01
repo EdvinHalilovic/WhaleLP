@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Flex } from '@chakra-ui/react';
-
 import MobileSpinsBanner from './MobileSpinsBanner';
+import MobileCharacterWheelLayout from './MobileCharacterWheelLayout';
 
-const MobileLayout: React.FC = () => {
-  // Broj spinova koji ostaje – kontrolisan iz parenta ili state-a
-  const [spinsLeft] = useState(2);
+interface MobileLayoutProps {
+  spinsLeft: number;
+  setSpinsLeft: React.Dispatch<React.SetStateAction<number>>;
+}
 
+const MobileLayout: React.FC<MobileLayoutProps> = ({
+  spinsLeft,
+  setSpinsLeft,
+}) => {
   return (
     <Box
       w="100vw"
-      h="100vh"
-      bgImage="url('/background.jpg')" // možeš zamijeniti ako imaš drugi bg za mobile
+      minH="100dvh" // koristi dynamic viewport da pozadina pokrije full screen i na mobilnim
+      bgImage="url('/background.jpg')"
       bgSize="cover"
       bgPos="center"
+      bgRepeat="no-repeat"
       overflow="hidden"
     >
       <Flex
@@ -22,14 +28,17 @@ const MobileLayout: React.FC = () => {
         justify="flex-start"
         w="100%"
         h="100%"
-        p="clamp(0.5rem, 3vw, 1rem)" // malo paddinga responsivno
+        p="clamp(0.5rem, 3vw, 1rem)"
         gap="clamp(1rem, 4vh, 2rem)"
       >
-        {/* Logo i banner */}
-
+        {/* Banner */}
         <MobileSpinsBanner spinsLeft={spinsLeft} />
 
-        {/* Ovdje kasnije ide wheel, dugmad, itd. */}
+        {/* Character + Wheel */}
+        <MobileCharacterWheelLayout
+          spinsLeft={spinsLeft}
+          setSpinsLeft={setSpinsLeft}
+        />
       </Flex>
     </Box>
   );
