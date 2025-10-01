@@ -2,10 +2,6 @@ import React from 'react';
 import { Flex, Box, Image } from '@chakra-ui/react';
 
 import character from '../logos/character.png';
-<<<<<<< HEAD
-import Wheel from '../components/Wheel';
-=======
->>>>>>> 21c8ea47894750dc30b9c75846522129e004b4e1
 
 interface MobileCharacterWheelLayoutProps {
   spinsLeft: number;
