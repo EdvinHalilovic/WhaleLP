@@ -94,7 +94,7 @@ const Root = () => {
   return (
     <ChakraProvider>
       {isMobile ? (
-        <MobileLayout />
+        <MobileLayout spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
       ) : (
         <DesktopApp spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
       )}

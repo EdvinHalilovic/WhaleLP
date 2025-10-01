@@ -15,7 +15,8 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
   return (
     <Box
       w="100vw"
-      minH="100dvh" // koristi dynamic viewport da pozadina pokrije full screen i na mobilnim
+      minH="100vh" // fallback za starije browsere i iOS bagove
+      minHeight="100dvh" // modern viewport visina (iOS 15+)
       bgImage="url('/background.jpg')"
       bgSize="cover"
       bgPos="center"
