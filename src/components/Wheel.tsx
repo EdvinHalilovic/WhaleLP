@@ -7,8 +7,9 @@ import {
   useDisclosure,
   Text,
   Box,
-  useBreakpointValue,
+  VStack,
 } from '@chakra-ui/react';
+import { keyframes } from '@chakra-ui/react';
 import SpinButton from './SpinButton';
 
 interface WheelProps {
@@ -25,6 +26,25 @@ const sectors = [
   { label: 'TRY AGAIN', color: '#F027C8' },
 ];
 
+/* ==== NOVI NAZIVI KEYFRAMESA ==== */
+const raysSpinCCW = keyframes`
+  from { transform: rotate(0deg)    scale(1.06); }
+  to   { transform: rotate(-360deg) scale(1.06); }
+`;
+const raysSpinCW = keyframes`
+  from { transform: rotate(0deg)    scale(1.06); }
+  to   { transform: rotate(360deg)  scale(1.06); }
+`;
+const coreGlowPulse = keyframes`
+  0%   { transform: scale(1);    opacity: .18; }
+  50%  { transform: scale(1.04); opacity: .30; }
+  100% { transform: scale(1);    opacity: .18; }
+`;
+const sparklesBlink = keyframes`
+  0%,100% { opacity: .18; transform: translate3d(0,0,0); }
+  50%     { opacity: .40; transform: translate3d(1px,-1px,0); }
+`;
+
 const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -33,10 +53,8 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
   const [spinCount, setSpinCount] = useState(0);
   const [claimed, setClaimed] = useState(false);
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
   const sliceAngle = (2 * Math.PI) / sectors.length;
 
-  // crtanje kola
   const drawWheel = (rotation: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -92,21 +110,17 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
 
   const spin = () => {
     if (spinsLeft <= 0 || isSpinning) return;
-
     setIsSpinning(true);
 
-    const nextSpinCount = spinCount + 1;
-    setSpinCount(nextSpinCount);
+    const next = spinCount + 1;
+    setSpinCount(next);
 
     let rotation = angle;
     let frames = 0;
 
-    let targetIndex = nextSpinCount === 1 ? 1 : 0;
+    let targetIndex = next === 1 ? 1 : 0;
     let targetAngle = targetIndex * sliceAngle;
-
-    if (nextSpinCount === 1) {
-      targetAngle += sliceAngle / 6;
-    }
+    if (next === 1) targetAngle += sliceAngle / 6;
 
     const pointerOffset = -Math.PI / 2;
     const extraSpins = 5 * 2 * Math.PI;
@@ -121,12 +135,10 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
       if (frames >= 100) {
         clearInterval(interval);
         setIsSpinning(false);
-        setSpinsLeft((prev) => prev - 1);
+        setSpinsLeft((p) => p - 1);
 
-        if (nextSpinCount === 2) {
-          setTimeout(() => {
-            onOpen();
-          }, 750);
+        if (next === 2) {
+          setTimeout(() => onOpen(), 750);
         }
       }
     }, 20);
@@ -146,11 +158,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         ref={canvasRef}
         width={500}
         height={500}
-        style={{
-          width: '100%',
-          height: '100%',
-          borderRadius: '50%',
-        }}
+        style={{ width: '100%', height: '100%', borderRadius: '50%' }}
       />
 
       {/* Ring overlay */}
@@ -215,7 +223,6 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         }}
       />
 
-      {/* Winning Modal */}
       <Modal
         isOpen={isOpen}
         onClose={() => {
@@ -225,21 +232,125 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         isCentered
       >
         <ModalOverlay bg="rgba(0,0,0,0.7)" />
+
         <ModalContent
           position="relative"
-          w={isMobile ? '100vw' : '90vw'}
-          h={isMobile ? '100dvh' : '90vh'}
-          maxW={isMobile ? '100vw' : '1200px'}
-          maxH="100vh"
+          w="100vw"
+          maxW="100vw"
+          h="100dvh"
+          maxH="100dvh"
           bg="transparent"
           boxShadow="none"
-          borderRadius={isMobile ? '0' : '20px'}
+          borderRadius="0"
           overflow="hidden"
         >
-          {/* Pozadinska slika */}
+          {/* === BACKGROUND SLOJEVI === */}
+          <Box
+            position="absolute"
+            inset={0}
+            zIndex={0}
+            pointerEvents="none"
+            sx={{
+              backgroundImage: 'url(/sun-ray-bg.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              opacity: 0.06,
+            }}
+          />
+
+          <Box
+            position="absolute"
+            inset={0}
+            zIndex={0}
+            pointerEvents="none"
+            sx={{
+              backgroundImage: 'url(/sun-ray-bg.png)',
+              backgroundSize: '110% 110%',
+              backgroundPosition: 'center',
+              mixBlendMode: 'screen',
+              transformOrigin: '50% 50%',
+              willChange: 'transform, filter, opacity',
+              filter: 'blur(0.4px) contrast(1.10) saturate(1.04)',
+              opacity: 0.22,
+            }}
+            animation={`${raysSpinCCW} 36s linear infinite`}
+          />
+
+          <Box
+            position="absolute"
+            inset={0}
+            zIndex={0}
+            pointerEvents="none"
+            sx={{
+              backgroundImage: 'url(/sun-ray-bg.png)',
+              backgroundSize: '110% 110%',
+              backgroundPosition: 'center',
+              mixBlendMode: 'screen',
+              transformOrigin: '50% 50%',
+              willChange: 'transform, filter, opacity',
+              filter: 'blur(0.4px) contrast(1.10) saturate(1.04)',
+              opacity: 0.22,
+            }}
+            animation={`${raysSpinCW} 36s linear infinite`}
+          />
+
+          {/* Dimmer i glow */}
+          <Box
+            position="absolute"
+            inset={0}
+            zIndex={1}
+            pointerEvents="none"
+            sx={{
+              background:
+                'radial-gradient(circle at 50% 40%, rgba(0,0,0,.18) 0%, rgba(0,0,0,.28) 55%, rgba(0,0,0,.36) 100%)',
+            }}
+          />
+
+          <Box
+            position="absolute"
+            inset={0}
+            zIndex={1}
+            pointerEvents="none"
+            sx={{
+              background:
+                'radial-gradient(circle at 50% 50%, rgba(255,235,180,0.35) 0%, rgba(255,214,120,0.22) 40%, rgba(255,190,90,0.10) 65%, rgba(255,190,90,0) 78%)',
+              mixBlendMode: 'screen',
+              transformOrigin: '50% 50%',
+            }}
+            animation={`${coreGlowPulse} 2.8s ease-in-out infinite`}
+          />
+
+          <Box
+            position="absolute"
+            inset={0}
+            zIndex={1}
+            pointerEvents="none"
+            sx={{
+              backgroundImage:
+                'radial-gradient(circle, rgba(255,255,255,.7) 0 1px, rgba(255,255,255,0) 2px),' +
+                'radial-gradient(circle, rgba(255,255,255,.5) 0 1px, rgba(255,255,255,0) 2px)',
+              backgroundSize: '180px 180px, 140px 140px',
+              backgroundPosition: '22% 32%, 68% 46%',
+              mixBlendMode: 'screen',
+              opacity: 0.7,
+            }}
+            animation={`${sparklesBlink} 2.8s ease-in-out infinite`}
+          />
+
+          {/* Tamni overlay */}
+          <Box
+            position="absolute"
+            inset={0}
+            bg="#51003A99"
+            zIndex={1}
+            pointerEvents="none"
+            backdropFilter="blur(2px)"
+          />
+
+          {/* Frame PNG */}
           <Box
             as="img"
-            src={isMobile ? '/WinningModalMobile.png' : '/WinningModal.png'}
+            src="/WinningModal.png"
             alt="Winning Frame"
             position="absolute"
             top="0"
@@ -248,83 +359,120 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             h="100%"
             objectFit="contain"
             pointerEvents="none"
-            zIndex={0}
+            zIndex={2}
           />
 
-          {/* Sadržaj */}
+          {/* === SADRŽAJ === */}
           <Box
             position="relative"
-            zIndex={1}
+            zIndex={3}
             w="100%"
             h="100%"
             display="flex"
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
-            textAlign="center"
             color="white"
-            px={6}
+            px={[4, 6]}
           >
-            <Text fontSize={['18px', '22px']} fontWeight="bold" mb={2}>
-              CONGRATULATIONS YOU WON:
-            </Text>
-
+            {/* Naslov gore */}
             <Text
-              fontSize="clamp(3rem,7vw,6rem)"
+              position="absolute"
+              top="clamp(30%, 18vh, 28%)"
+              left="50%"
+              transform="translateX(-50%)"
               fontWeight="extrabold"
-              color="pink.200"
-              lineHeight="1"
+              textTransform="uppercase"
+              textAlign="center"
+              lineHeight="1.05"
+              letterSpacing="wide"
+              fontSize={['18px', '22px', '28px']}
             >
-              5
+              <Box as="span" display="block">
+                CONGRATULATIONS
+              </Box>
+              <Box as="span" display="block">
+                YOU WON
+              </Box>
             </Text>
 
-            <Text fontSize={['22px', '32px']} fontWeight="bold" mb={6}>
-              FREE SPINS
-            </Text>
+            {/* Broj i FREE SPINS */}
+            <VStack
+              spacing={[2, 3]}
+              align="center"
+              w="full"
+              maxW={['320px', '460px', '620px']}
+            >
+              <Text
+                fontWeight="800"
+                color="pink.200"
+                lineHeight="0.95"
+                fontSize={['64px', '84px', 'clamp(96px, 12vw, 140px)']}
+              >
+                5
+              </Text>
 
+              <Text fontSize={['18px', '22px', '32px']} fontWeight="bold">
+                FREE SPINS
+              </Text>
+            </VStack>
+
+            {/* WHALE.IO box kad je claimed */}
             {claimed && (
               <Box
+                mt={4}
                 border="2px dashed #FF2AD5"
                 borderRadius="12px"
                 py={3}
                 px={6}
-                fontSize="22px"
+                fontSize={['18px', '20px', '22px']}
                 fontWeight="bold"
                 color="white"
-                mb={6}
+                bg="rgba(0,0,0,0.35)"
+                backdropFilter="auto"
+                backdropBlur="2px"
               >
-                "WHALE.IO"
+                WHALE.IO
               </Box>
             )}
 
-            {!claimed ? (
-              <Button
-                bg="pink.500"
-                color="white"
-                size="lg"
-                borderRadius="full"
-                px={10}
-                onClick={() => setClaimed(true)}
-                _hover={{ bg: 'pink.400' }}
-              >
-                CLAIM PRIZE
-              </Button>
-            ) : (
-              <Button
-                bg="pink.400"
-                color="white"
-                size="lg"
-                borderRadius="full"
-                px={10}
-                onClick={() => {
-                  navigator.clipboard.writeText('WHALE.IO');
-                  onClose();
-                }}
-                _hover={{ bg: 'pink.300' }}
-              >
-                COPY & CLAIM
-              </Button>
-            )}
+            {/* Dugme fiksirano dole */}
+            <Box
+              position="absolute"
+              bottom={['30%', '25%', '13%']}
+              left="50%"
+              transform="translateX(-50%)"
+              zIndex={4}
+            >
+              {!claimed ? (
+                <Button
+                  bg="pink.500"
+                  color="white"
+                  size="lg"
+                  borderRadius="full"
+                  px={10}
+                  onClick={() => setClaimed(true)}
+                  _hover={{ bg: 'pink.400' }}
+                >
+                  CLAIM PRIZE
+                </Button>
+              ) : (
+                <Button
+                  bg="pink.400"
+                  color="white"
+                  size="lg"
+                  borderRadius="full"
+                  px={10}
+                  onClick={() => {
+                    navigator.clipboard.writeText('WHALE.IO');
+                    onClose();
+                  }}
+                  _hover={{ bg: 'pink.300' }}
+                >
+                  COPY & CLAIM
+                </Button>
+              )}
+            </Box>
           </Box>
         </ModalContent>
       </Modal>
