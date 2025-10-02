@@ -269,12 +269,9 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
               backgroundPosition: 'center',
               mixBlendMode: 'screen',
               transformOrigin: '50% 50%',
-              filter: [
-                'blur(1px) contrast(1.2) saturate(1.2)',
-                'blur(0.6px) contrast(1.1)',
-                'blur(0.4px) contrast(1.05)',
-              ],
-              opacity: [0.4, 0.3, 0.22], // jače na mobile
+              willChange: 'transform, filter, opacity',
+              filter: 'blur(1px) contrast(1.2) saturate(1.1)',
+              opacity: 0.5,
             }}
             animation={`${raysSpinCCW} 36s linear infinite`}
           />
@@ -291,8 +288,8 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
               mixBlendMode: 'screen',
               transformOrigin: '50% 50%',
               willChange: 'transform, filter, opacity',
-              filter: 'blur(0.4px) contrast(1.10) saturate(1.04)',
-              opacity: 0.22,
+              filter: 'blur(1px) contrast(1.2) saturate(1.1)',
+              opacity: 0.5,
             }}
             animation={`${raysSpinCW} 36s linear infinite`}
           />
@@ -329,16 +326,17 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             zIndex={1}
             pointerEvents="none"
             sx={{
-              backgroundImage:
-                'radial-gradient(circle, rgba(255,255,255,.8) 0 2px, rgba(255,255,255,0) 3px),' +
-                'radial-gradient(circle, rgba(255,255,255,.6) 0 2px, rgba(255,255,255,0) 3px)',
+              backgroundImage: `
+  radial-gradient(circle, rgba(255,255,255,0.9) 0 2px, rgba(255,255,255,0) 3px),
+  radial-gradient(circle, rgba(255,200,255,0.8) 0 2px, rgba(255,255,255,0) 3px)
+`,
               backgroundSize: [
                 '260px 260px, 200px 200px',
                 '200px 200px, 160px 160px',
               ], // veće tačke na mobu
               backgroundPosition: '22% 32%, 68% 46%',
               mixBlendMode: 'screen',
-              opacity: [0.55, 0.4, 0.35], // jače na mobile
+              opacity: 1.2,
             }}
             animation={`${sparklesBlink} 3s ease-in-out infinite`}
           />
