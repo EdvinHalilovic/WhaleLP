@@ -7,6 +7,7 @@ import {
   useDisclosure,
   Text,
   Box,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import SpinButton from './SpinButton';
 
@@ -32,6 +33,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
   const [spinCount, setSpinCount] = useState(0);
   const [claimed, setClaimed] = useState(false);
 
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const sliceAngle = (2 * Math.PI) / sectors.length;
 
   // crtanje kola
@@ -225,16 +227,19 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         <ModalOverlay bg="rgba(0,0,0,0.7)" />
         <ModalContent
           position="relative"
-          w="95%"
-          maxW="480px"
-          h="auto"
-          py={8}
+          w={isMobile ? '100vw' : '90vw'}
+          h={isMobile ? '100dvh' : '90vh'}
+          maxW={isMobile ? '100vw' : '1200px'}
+          maxH="100vh"
           bg="transparent"
           boxShadow="none"
+          borderRadius={isMobile ? '0' : '20px'}
+          overflow="hidden"
         >
+          {/* Pozadinska slika */}
           <Box
             as="img"
-            src="/WinningModal.png"
+            src={isMobile ? '/WinningModalMobile.png' : '/WinningModal.png'}
             alt="Winning Frame"
             position="absolute"
             top="0"
@@ -243,10 +248,13 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             h="100%"
             objectFit="contain"
             pointerEvents="none"
+            zIndex={0}
           />
 
+          {/* Sadržaj */}
           <Box
             position="relative"
+            zIndex={1}
             w="100%"
             h="100%"
             display="flex"
@@ -260,14 +268,16 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             <Text fontSize={['18px', '22px']} fontWeight="bold" mb={2}>
               CONGRATULATIONS YOU WON:
             </Text>
+
             <Text
-              fontSize="clamp(3rem, 7vw, 5rem)"
+              fontSize="clamp(3rem,7vw,6rem)"
               fontWeight="extrabold"
               color="pink.200"
               lineHeight="1"
             >
               5
             </Text>
+
             <Text fontSize={['22px', '32px']} fontWeight="bold" mb={6}>
               FREE SPINS
             </Text>
