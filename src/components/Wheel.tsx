@@ -54,7 +54,28 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
   const [claimed, setClaimed] = useState(false);
 
   const sliceAngle = (2 * Math.PI) / sectors.length;
+  useEffect(() => {
+    const savedClaimed = localStorage.getItem('claimedPrize');
+    const savedSpins = localStorage.getItem('remainingSpins');
 
+    if (savedClaimed === 'true') {
+      setClaimed(true);
+      onOpen(); // otvori modal odmah
+    }
+
+    if (savedSpins !== null) {
+      setSpinsLeft(parseInt(savedSpins, 10));
+    }
+  }, []);
+
+  /* === Čuvaj stanje kad se promijeni === */
+  useEffect(() => {
+    localStorage.setItem('remainingSpins', spinsLeft.toString());
+  }, [spinsLeft]);
+
+  useEffect(() => {
+    localStorage.setItem('claimedPrize', claimed.toString());
+  }, [claimed]);
   const drawWheel = (rotation: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -145,11 +166,24 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
   useEffect(() => {
     drawWheel(angle);
   }, [angle]);
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 'r') {
+        // CTRL + R kao shortcut
+        localStorage.removeItem('claimedPrize');
+        window.location.reload(); // refresha da krene od nule
+        console.log('🔄 Resetovan claimedPrize');
+      }
+    };
+
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, []);
 
   const spin = () => {
-    if (spinsLeft <= 0 || isSpinning) return;
-    setIsSpinning(true);
+    if (spinsLeft <= 0 || isSpinning || claimed) return; // spriječi ponovno
 
+    setIsSpinning(true);
     const next = spinCount + 1;
     setSpinCount(next);
 
@@ -174,14 +208,22 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         clearInterval(interval);
         setIsSpinning(false);
         setSpinsLeft((p) => p - 1);
-
         if (next === 2) {
-          setTimeout(() => onOpen(), 750);
+          setTimeout(() => {
+            onOpen(); // samo otvori modal
+            // ⚠️ maknuto setClaimed(true)
+          }, 750);
         }
       }
     }, 20);
   };
-
+  useEffect(() => {
+    const savedClaimed = localStorage.getItem('claimedPrize');
+    if (savedClaimed === 'true') {
+      setClaimed(true);
+    }
+  }, []);
+  const alwaysOpen = claimed;
   return (
     <Box
       position="relative"
@@ -260,14 +302,17 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
           height: 'auto',
         }}
       />
-
       <Modal
-        isOpen={isOpen}
+        isOpen={alwaysOpen || isOpen} // ako je claimed => uvijek true
         onClose={() => {
-          setClaimed(false);
-          onClose();
+          if (!claimed) {
+            setClaimed(false);
+            onClose();
+          }
         }}
         isCentered
+        closeOnOverlayClick={false} // ne može zatvoriti klikom na pozadinu
+        closeOnEsc={false} // ne može zatvoriti ESC-om
       >
         <ModalOverlay bg="rgba(0,0,0,0.7)" />
 
@@ -420,7 +465,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
             {/* Naslov gore */}
             <Text
               position="absolute"
-              top="clamp(30%, 18vh, 28%)"
+              top={['30%', '20%', '15%']}
               left="50%"
               transform="translateX(-50%)"
               fontWeight="extrabold"
@@ -433,9 +478,18 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
               <Box as="span" display="block">
                 CONGRATULATIONS
               </Box>
-              <Box as="span" display="block">
-                YOU WON
-              </Box>
+              <Text
+                fontSize={['18px', '22px', '28px']}
+                fontWeight="extrabold"
+                textTransform="uppercase"
+                textAlign="center"
+                lineHeight="1.05"
+                letterSpacing="wide"
+                bgGradient="linear(180deg, #FF78E4 11.46%, #FFD8F7 49.89%, #FF78E4 89.06%)"
+                bgClip="text"
+              >
+                YOU WON:
+              </Text>
             </Text>
 
             {/* Broj i FREE SPINS */}
@@ -459,20 +513,21 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
               </Text>
             </VStack>
 
-            {/* WHALE.IO box kad je claimed */}
             {claimed && (
               <Box
-                mt={4}
-                border="2px dashed #FF2AD5"
-                borderRadius="12px"
-                py={3}
-                px={6}
-                fontSize={['18px', '20px', '22px']}
+                w="full"
+                maxW="clamp(240px, 70%, 450px)"
+                mx="auto"
+                mt={[4, 5, 6]}
+                border="2px dashed #FF5EDF"
+                borderRadius="16px"
+                bgGradient="linear(249deg, rgba(255, 94, 223, 0.20) 14.07%, rgba(224, 0, 180, 0.20) 85.93%)"
+                py={[3, 4]}
+                px={[4, 6]}
+                textAlign="center"
                 fontWeight="bold"
+                fontSize={['16px', '18px', '20px']}
                 color="white"
-                bg="rgba(0,0,0,0.35)"
-                backdropFilter="auto"
-                backdropBlur="2px"
               >
                 WHALE.IO
               </Box>

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import MobileSpinsBanner from './MobileSpinsBanner';
 import MobileCharacterWheelLayout from './MobileCharacterWheelLayout';
+import SoundButton from '../components/SoundButton';
 
 interface MobileLayoutProps {
   spinsLeft: number;
@@ -33,6 +34,8 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
       bgRepeat="no-repeat"
       overflow="visible"
     >
+      <SoundButton />
+
       <Flex
         direction="column"
         align="center"

@@ -33,8 +33,8 @@ const DesktopApp: React.FC<{
         maxW="none"
         objectFit="contain"
         pointerEvents="none"
-        zIndex={2}
         mb="-30vh"
+        ml="20vh"
       />
 
       {/* Lik desno */}
@@ -49,8 +49,8 @@ const DesktopApp: React.FC<{
         maxW="none"
         objectFit="contain"
         pointerEvents="none"
-        zIndex={2}
         mb="-35vh"
+        mr="20vh"
       />
 
       {/* Centrirani container */}
