@@ -76,9 +76,35 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
       ctx.closePath();
-      ctx.fillStyle = sector.color;
+
+      // Pozadina sektora
+      if (sector.label === 'FREE SPINS') {
+        // Gradient za FREE SPINS
+        const gradient = ctx.createLinearGradient(
+          centerX,
+          centerY - radius,
+          centerX,
+          centerY + radius
+        );
+        gradient.addColorStop(0, '#FFAAE5');
+        gradient.addColorStop(1, '#F5D4EB');
+        ctx.fillStyle = gradient;
+      } else {
+        // Gradient za TRY AGAIN
+        const gradient = ctx.createLinearGradient(
+          centerX,
+          centerY - radius,
+          centerX,
+          centerY + radius
+        );
+        gradient.addColorStop(0, '#F027C8');
+        gradient.addColorStop(1, '#E000B4');
+        ctx.fillStyle = gradient;
+      }
+
       ctx.fill();
 
+      // ======= TEKST =======
       ctx.save();
       ctx.translate(centerX, centerY);
 
@@ -88,14 +114,26 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
       const y = Math.sin(angleRad) * textRadius;
 
       ctx.textAlign = 'center';
-      ctx.fillStyle = '#FFF';
-      const fontSize = size / 22;
+      const fontSize = Math.max(18, Math.min(size / 15, 32));
       ctx.font = `800 ${fontSize}px Jost`;
+      ctx.textBaseline = 'middle';
 
       if (sector.label === 'TRY AGAIN') {
+        ctx.fillStyle = '#FFF'; // bijeli tekst
         ctx.fillText('TRY', x, y - fontSize / 2);
         ctx.fillText('AGAIN', x, y + fontSize / 1.2);
       } else {
+        // Gradient tekst za FREE SPINS
+        const textGradient = ctx.createLinearGradient(
+          x,
+          y - fontSize,
+          x,
+          y + fontSize
+        );
+        textGradient.addColorStop(0, '#FF2AD5');
+        textGradient.addColorStop(1, '#C3009D');
+        ctx.fillStyle = textGradient;
+
         ctx.fillText('FREE', x, y - fontSize / 2);
         ctx.fillText('SPINS', x, y + fontSize / 1.2);
       }
@@ -148,7 +186,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
     <Box
       position="relative"
       w="100%"
-      maxW={['300px', '400px', '500px']}
+      maxW={['400px', '600px', '900px']}
       aspectRatio="1/1"
       mx="auto"
       mb={['20px', '40px', '60px']}

@@ -6,6 +6,7 @@ import Wheel from './components/Wheel';
 import SpinsBanner from './components/SpinsBanner';
 import MobileLayout from './layouts/MobileLayout';
 
+// 👇 NOVA DesktopApp komponenta
 const DesktopApp: React.FC<{
   spinsLeft: number;
   setSpinsLeft: React.Dispatch<React.SetStateAction<number>>;
@@ -21,64 +22,59 @@ const DesktopApp: React.FC<{
       bgPos="center"
       bgRepeat="no-repeat"
     >
-      {/* Lik lijevo */}
-      <Image
-        src="/character-left.png"
-        alt="Character Left"
-        position="absolute"
-        left={['-60px', '-40px', '20px', '100px']}
-        bottom={['-40px', '-60px', '-80px', '-100px']}
-        w="clamp(120px, 20vw, 400px)"
-        display={['none', 'block']}
-        objectFit="contain"
-        pointerEvents="none"
-      />
-
-      {/* Lik desno */}
-      <Image
-        src="/rightcarachter.png"
-        alt="Character Right"
-        position="absolute"
-        right={['-60px', '-40px', '20px', '100px']}
-        bottom={['-40px', '-60px', '-80px', '-100px']}
-        w="clamp(120px, 20vw, 400px)"
-        display={['none', 'block']}
-        objectFit="contain"
-        pointerEvents="none"
-      />
-
-      {/* Centrirani container */}
       <Box
-        position="absolute"
-        top="50%"
-        left="50%"
-        transform="translate(-50%, -50%)"
         display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        gap="clamp(20px, 5vh, 40px)"
-        w="90vw"
-        maxW="600px"
-        px={[2, 4, 6]}
+        alignItems="flex-end" // 👈 spušta likove skroz dole
+        justifyContent="center" // 👈 likovi bliže centru
+        h="100%"
+        gap="0" // 👈 manji razmak wheel <-> likovi
+        px="1vw"
       >
-        {/* Banner gore */}
-        <SpinsBanner spinsLeft={spinsLeft} />
+        {/* Lik lijevo */}
+        <Image
+          src="/character-left.png"
+          alt="Character Left"
+          objectFit="contain"
+          h={['70%', '85%', '95%']}
+          maxW="28vw"
+          pointerEvents="none"
+          mb="-10vh" // 👈 malo spuštanje
+          mr="-3vw"
+        />
 
-        {/* Wheel ispod */}
+        {/* Wheel + Banner */}
         <Box
-          w="clamp(220px, 45vw, 440px)"
-          minW="200px"
-          maxW="480px"
-          aspectRatio="1/1"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          gap="clamp(20px, 5vh, 40px)"
+          w={['60vw', '45vw', '32vw']}
+          maxW="600px"
         >
-          <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+          <SpinsBanner spinsLeft={spinsLeft} />
+          <Box w="100%" aspectRatio="1/1">
+            <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+          </Box>
         </Box>
+
+        {/* Lik desno */}
+        <Image
+          src="/rightcarachter.png"
+          alt="Character Right"
+          objectFit="contain"
+          h={['70%', '85%', '95%']}
+          maxW="28vw"
+          pointerEvents="none"
+          ml="-3vw"
+          mb="-10vh"
+        />
       </Box>
     </Box>
   );
 };
 
+// 👇 Root koji bira Mobile ili Desktop
 const Root = () => {
   const [spinsLeft, setSpinsLeft] = useState(2);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
