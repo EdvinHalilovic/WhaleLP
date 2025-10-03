@@ -4,8 +4,9 @@ import React from 'react';
 const SpinButton = () => {
   return (
     <Box
-      w="clamp(100px, 18vw, 150px)" // min 100px, raste sa ekranom do max 150px
-      h="clamp(100px, 18vw, 150px)"
+      w={['22vw', '18vw', '14vw']} // responsive širina: 22% mob, 18% tablet, 14% desktop
+      maxW="160px" // gornja granica da ne pređe previše
+      aspectRatio="1 / 1" // uvijek savršen krug
       borderRadius="full"
       border="clamp(4px, 1vw, 8px) solid #FFF"
       overflow="hidden"
@@ -17,10 +18,7 @@ const SpinButton = () => {
       {/* Background image */}
       <Box
         position="absolute"
-        top={0}
-        left={0}
-        w="100%"
-        h="100%"
+        inset={0}
         bgImage="url('/SpinBackground.png')"
         bgSize="cover"
         bgPosition="center"
@@ -29,10 +27,7 @@ const SpinButton = () => {
       {/* Gradient overlay */}
       <Box
         position="absolute"
-        top={0}
-        left={0}
-        w="100%"
-        h="100%"
+        inset={0}
         bgGradient="linear(180deg, #FF00CC 0%, #AD008A 100%)"
         mixBlendMode="color"
       />
@@ -40,9 +35,9 @@ const SpinButton = () => {
       {/* Tekst */}
       <Text
         color="#FFF"
-        textShadow="0 0 24px rgba(0, 0, 0, 0.80)"
+        textShadow="0 0 24px rgba(0, 0, 0, 0.8)"
         fontFamily="Jost, sans-serif"
-        fontSize="clamp(18px, 4vw, 36px)" // tekst od 18px do 36px
+        fontSize={['clamp(18px, 4vw, 28px)', 'clamp(20px, 3vw, 32px)']}
         fontWeight="800"
         lineHeight="1.2"
         textAlign="center"

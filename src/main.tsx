@@ -23,17 +23,6 @@ const DesktopApp: React.FC<{
       bgPos="center"
       bgRepeat="no-repeat"
     >
-      {/* Whale Logo gore centriran */}
-      <Box
-        position="absolute"
-        top="2vh"
-        left="50%"
-        transform="translateX(-50%)"
-        zIndex={20}
-      >
-        <WhaleLogo width="clamp(100px, 15vw, 180px)" />
-      </Box>
-
       {/* Likovi + wheel */}
       <Box
         display="flex"
@@ -53,20 +42,26 @@ const DesktopApp: React.FC<{
           pointerEvents="none"
           alignSelf="flex-end"
           mr="-3vw"
-          mb="-25vh"
+          mb="-20vh"
         />
 
-        {/* Wheel + Banner */}
+        {/* Centralni dio (Logo + Banner + Wheel) */}
         <Box
           display="flex"
           flexDirection="column"
           alignItems="center"
-          justifyContent="flex-start"
-          gap="clamp(10px, 3vh, 20px)"
+          justifyContent="center"
+          gap="clamp(8px, 2vh, 16px)" // 👈 bliže logo i banner
           w={['60vw', '45vw', '32vw']}
           maxW="clamp(300px, 40vw, 700px)"
         >
+          {/* Whale Logo */}
+          <WhaleLogo width="clamp(100px, 12vw, 160px)" />
+
+          {/* Spins Banner */}
           <SpinsBanner spinsLeft={spinsLeft} />
+
+          {/* Wheel */}
           <Box w="100%" aspectRatio="1/1">
             <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
           </Box>
@@ -83,7 +78,7 @@ const DesktopApp: React.FC<{
           pointerEvents="none"
           alignSelf="flex-end"
           ml="-3vw"
-          mb="-28vh"
+          mb="-20vh"
         />
       </Box>
     </Box>
