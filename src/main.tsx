@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ChakraProvider, Box, Image } from '@chakra-ui/react';
-
 import Wheel from './components/Wheel';
 import SpinsBanner from './components/SpinsBanner';
 import MobileLayout from './layouts/MobileLayout';
 import WhaleLogo from './logos/WhaleLogo';
 
-// 👇 DesktopApp
 const DesktopApp: React.FC<{
   spinsLeft: number;
   setSpinsLeft: React.Dispatch<React.SetStateAction<number>>;
@@ -23,69 +21,70 @@ const DesktopApp: React.FC<{
       bgPos="center"
       bgRepeat="no-repeat"
     >
-      {/* Likovi + wheel */}
+      {/* Lik lijevo */}
+      <Image
+        src="/character-left.png"
+        alt="Character Left"
+        position="absolute"
+        left="0"
+        bottom="0"
+        w="32vw" // zauzima skoro pola ekrana
+        h="auto"
+        maxW="none"
+        objectFit="contain"
+        pointerEvents="none"
+        zIndex={2}
+        mb="-30vh"
+      />
+
+      {/* Lik desno */}
+      <Image
+        src="/rightcarachter.png"
+        alt="Character Right"
+        position="absolute"
+        right="0"
+        bottom="0"
+        w="32vw"
+        h="auto"
+        maxW="none"
+        objectFit="contain"
+        pointerEvents="none"
+        zIndex={2}
+        mb="-35vh"
+      />
+
+      {/* Centrirani container */}
       <Box
+        position="absolute"
+        top="54%"
+        left="50%"
+        transform="translate(-50%, -50%)"
         display="flex"
-        alignItems="flex-end"
+        flexDirection="column"
+        alignItems="center"
         justifyContent="center"
-        h="100%"
-        px="1vw"
+        gap="clamp(20px, 5vh, 40px)"
+        w="90vw"
+        maxW="600px"
+        px={[2, 4, 6]}
       >
-        {/* Lik lijevo */}
-        <Image
-          src="/character-left.png"
-          alt="Character Left"
-          objectFit="contain"
-          w={['40vw', '42vw', '44vw']}
-          maxW="700px"
-          aspectRatio={631 / 1036}
-          pointerEvents="none"
-          alignSelf="flex-end"
-          mr="-3vw"
-          mb="-20vh"
-        />
+        {/* Banner gore */}
+        <WhaleLogo width="clamp(100px, 12vw, 160px)" />
 
-        {/* Centralni dio (Logo + Banner + Wheel) */}
+        <SpinsBanner spinsLeft={spinsLeft} />
+
+        {/* Wheel ispod */}
         <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          gap="clamp(8px, 2vh, 16px)" // 👈 bliže logo i banner
-          w={['60vw', '45vw', '32vw']}
-          maxW="clamp(300px, 40vw, 700px)"
+          w="clamp(200px, 36vw, 460px)" // 👈 smanjeno
+          aspectRatio="1/1"
         >
-          {/* Whale Logo */}
-          <WhaleLogo width="clamp(100px, 12vw, 160px)" />
-
-          {/* Spins Banner */}
-          <SpinsBanner spinsLeft={spinsLeft} />
-
-          {/* Wheel */}
-          <Box w="100%" aspectRatio="1/1">
-            <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
-          </Box>
+          <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
         </Box>
-
-        {/* Lik desno */}
-        <Image
-          src="/rightcarachter.png"
-          alt="Character Right"
-          objectFit="contain"
-          w={['40vw', '42vw', '44vw']}
-          maxW="clamp(300px, 45vw, 700px)"
-          aspectRatio={631 / 1036}
-          pointerEvents="none"
-          alignSelf="flex-end"
-          ml="-3vw"
-          mb="-20vh"
-        />
       </Box>
     </Box>
   );
 };
 
-// 👇 Root bira Mobile ili Desktop
 const Root = () => {
   const [spinsLeft, setSpinsLeft] = useState(2);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
