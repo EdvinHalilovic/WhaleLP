@@ -26,8 +26,8 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
   return (
     <Box
       w="100vw"
-      minH="var(--app-height)" // koristi custom visinu koja je tačna
-      bgImage="url('/background.jpg')"
+      minH="var(--app-height)"
+      bgImage="url('/mobile-bg.jpg')"
       bgSize="cover"
       bgPos="center"
       bgRepeat="no-repeat"
