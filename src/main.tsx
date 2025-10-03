@@ -5,6 +5,7 @@ import Wheel from './components/Wheel';
 import SpinsBanner from './components/SpinsBanner';
 import MobileLayout from './layouts/MobileLayout';
 import WhaleLogo from './logos/WhaleLogo';
+import SoundButton from './components/SoundButton';
 
 const DesktopApp: React.FC<{
   spinsLeft: number;
@@ -21,6 +22,7 @@ const DesktopApp: React.FC<{
       bgPos="center"
       bgRepeat="no-repeat"
     >
+      <SoundButton />
       {/* Lik lijevo */}
       <Image
         src="/character-left.png"
@@ -28,13 +30,14 @@ const DesktopApp: React.FC<{
         position="absolute"
         left="0"
         bottom="0"
-        w="32vw" // zauzima skoro pola ekrana
+        w="33vw"
         h="auto"
         maxW="none"
         objectFit="contain"
         pointerEvents="none"
-        mb="-30vh"
+        mb="-45vh"
         ml="20vh"
+        zIndex={1} // ide ispod wheela
       />
 
       {/* Lik desno */}
@@ -44,13 +47,14 @@ const DesktopApp: React.FC<{
         position="absolute"
         right="0"
         bottom="0"
-        w="32vw"
+        w="33vw"
         h="auto"
         maxW="none"
         objectFit="contain"
         pointerEvents="none"
-        mb="-35vh"
+        mb="-45vh"
         mr="20vh"
+        zIndex={1}
       />
 
       {/* Centrirani container */}
@@ -67,18 +71,33 @@ const DesktopApp: React.FC<{
         w="90vw"
         maxW="600px"
         px={[2, 4, 6]}
+        zIndex={2} // sve iznad likova
       >
-        {/* Banner gore */}
-        <WhaleLogo width="clamp(100px, 12vw, 160px)" />
+        {/* Whale Logo sa custom marginom */}
 
-        <SpinsBanner spinsLeft={spinsLeft} />
-
-        {/* Wheel ispod */}
         <Box
-          w="clamp(200px, 36vw, 460px)" // 👈 smanjeno
-          aspectRatio="1/1"
+          position="absolute"
+          top="5%" // 👈 kontrolira koliko od vrha ekrana
+          left="50%"
+          transform="translateX(-50%)"
+          zIndex={2}
         >
-          <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+          <WhaleLogo width="clamp(100px, 12vw, 160px)" />
+        </Box>
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          gap="clamp(20px, 5vh, 40px)"
+          mt="5rem" // 👈 ovo spušta samo Banner i Wheel
+        >
+          <SpinsBanner spinsLeft={spinsLeft} />
+
+          <Box w="clamp(200px, 36vw, 460px)" aspectRatio="1/1">
+            <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+          </Box>
         </Box>
       </Box>
     </Box>

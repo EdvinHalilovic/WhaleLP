@@ -8,7 +8,7 @@ interface WhaleLogoProps {
 }
 
 const WhaleLogo: React.FC<WhaleLogoProps> = ({
-  width = 'clamp(8rem, 20vw, 12rem)', // skaluje od ~128px do ~192px
+  width = 'clamp(140px, 18vw, 180px)', // skaluje, max 180px
   height = 'auto',
 }) => {
   return (
@@ -16,18 +16,20 @@ const WhaleLogo: React.FC<WhaleLogoProps> = ({
       direction="row"
       align="center"
       justify="center"
-      gap="clamp(0.25rem, 1vw, 0.75rem)" // razmak se prilagođava
-      width={width}
-      height={height}
-      flexShrink={0}
+      gap="clamp(0.25rem, 1vw, 0.75rem)"
+      w={width}
+      h={height}
+      aspectRatio="15 / 4" // 👈 uvijek drži proporciju 15:4
+      minW="140px"
+      maxW="180px"
+      borderRadius="8px"
     >
       {/* Ikonica */}
       <Image
         src={keyMascot}
         alt="Whale Logo"
-        width="clamp(1.5rem, 5vw, 2.5rem)" // min 24px, max ~40px
-        height="auto"
-        flexShrink={0}
+        w="clamp(20px, 2vw, 32px)"
+        h="auto"
         objectFit="contain"
       />
 
@@ -37,7 +39,7 @@ const WhaleLogo: React.FC<WhaleLogoProps> = ({
         textAlign="center"
         textShadow="0 4px 4px rgba(0, 0, 0, 0.25)"
         fontFamily="Jost, sans-serif"
-        fontSize="clamp(1rem, 3vw, 1.6rem)" // min 16px, max ~25px
+        fontSize="clamp(0.9rem, 2.2vw, 1.2rem)"
         fontWeight="800"
         lineHeight="1.2"
         letterSpacing="0.02em"

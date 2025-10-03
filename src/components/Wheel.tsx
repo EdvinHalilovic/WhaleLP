@@ -130,7 +130,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
       ctx.translate(centerX, centerY);
 
       const angleRad = startAngle + sliceAngle / 2;
-      const textRadius = radius - size / 4.5;
+      const textRadius = radius - size / 5.2;
       const x = Math.cos(angleRad) * textRadius;
       const y = Math.sin(angleRad) * textRadius;
 
