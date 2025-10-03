@@ -37,10 +37,9 @@ const DesktopApp: React.FC<{
       {/* Likovi + wheel */}
       <Box
         display="flex"
-        alignItems="flex-end" // likovi i wheel idu dolje
+        alignItems="flex-end"
         justifyContent="center"
         h="100%"
-        gap="0"
         px="1vw"
       >
         {/* Lik lijevo */}
@@ -48,12 +47,12 @@ const DesktopApp: React.FC<{
           src="/character-left.png"
           alt="Character Left"
           objectFit="contain"
-          w={['40vw', '42vw', '44vw']} // zauzima skoro pola ekrana
-          maxW="clamp(300px, 45vw, 700px)" // responsive širina
-          aspectRatio={631 / 1036} // proporcije iz Figma
+          w={['40vw', '42vw', '44vw']}
+          maxW="700px"
+          aspectRatio={631 / 1036}
           pointerEvents="none"
           alignSelf="flex-end"
-          mr="-5vw"
+          mr="-3vw"
           mb="-25vh"
         />
 
@@ -62,11 +61,10 @@ const DesktopApp: React.FC<{
           display="flex"
           flexDirection="column"
           alignItems="center"
-          justifyContent="center"
-          gap="clamp(20px, 5vh, 40px)"
+          justifyContent="flex-start"
+          gap="clamp(10px, 3vh, 20px)"
           w={['60vw', '45vw', '32vw']}
           maxW="clamp(300px, 40vw, 700px)"
-          mb="-5vh"
         >
           <SpinsBanner spinsLeft={spinsLeft} />
           <Box w="100%" aspectRatio="1/1">
