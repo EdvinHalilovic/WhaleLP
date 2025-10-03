@@ -27,7 +27,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
     <Box
       w="100vw"
       minH="var(--app-height)"
-      bgImage="url('/mobile-bg.jpg')"
+      bgImage="url('/mobile-bg.png')"
       bgSize="cover"
       bgPos="center"
       bgRepeat="no-repeat"
