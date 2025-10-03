@@ -1,5 +1,4 @@
 import React from 'react';
-import WhaleLogo from '../logos/WhaleLogo';
 import splash from '../logos/splash.png';
 
 interface SpinsBannerProps {
@@ -13,29 +12,16 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: 'clamp(0.75rem, 2vh, 1.5rem)', // razmak fleksibilan
+        gap: 'clamp(0.75rem, 2vh, 1.5rem)',
         width: '100%',
       }}
     >
-      {/* Whale logo */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: 'clamp(8px, 2vh, 24px)', // manji top margin
-          marginBottom: 'clamp(8px, 2vh, 20px)',
-          width: '100%',
-        }}
-      >
-        <WhaleLogo width="clamp(100px, 22vw, 160px)" height="auto" />
-      </div>
-
       {/* Tekst YOU GOT */}
       <div
         style={{
           color: '#FFF',
           textAlign: 'center',
-          fontSize: 'clamp(1rem, 2.5vw, 1.8rem)', // 16px → 28px
+          fontSize: 'clamp(1rem, 2.5vw, 1.8rem)',
           fontWeight: 800,
           lineHeight: 1.2,
           textShadow: '0 2px 4px rgba(0,0,0,0.3)',
@@ -45,13 +31,7 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
       </div>
 
       {/* Splash background */}
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <div
           style={{
             width: 'clamp(200px, 75%, 420px)',
@@ -76,7 +56,7 @@ const SpinsBanner: React.FC<SpinsBannerProps> = ({ spinsLeft }) => {
               textAlign: 'center',
               textShadow: '0 5px 5px rgba(0, 0, 0, 0.25)',
               fontFamily: 'Jost, sans-serif',
-              fontSize: 'clamp(0.9rem, 3.5vw, 1.6rem)', // 14px → 26px
+              fontSize: 'clamp(0.9rem, 3.5vw, 1.6rem)',
               fontWeight: 800,
               lineHeight: 1.2,
               flexShrink: 1,

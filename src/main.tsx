@@ -5,8 +5,9 @@ import { ChakraProvider, Box, Image } from '@chakra-ui/react';
 import Wheel from './components/Wheel';
 import SpinsBanner from './components/SpinsBanner';
 import MobileLayout from './layouts/MobileLayout';
+import WhaleLogo from './logos/WhaleLogo';
 
-// 👇 NOVA DesktopApp komponenta
+// 👇 DesktopApp
 const DesktopApp: React.FC<{
   spinsLeft: number;
   setSpinsLeft: React.Dispatch<React.SetStateAction<number>>;
@@ -22,12 +23,24 @@ const DesktopApp: React.FC<{
       bgPos="center"
       bgRepeat="no-repeat"
     >
+      {/* Whale Logo gore centriran */}
+      <Box
+        position="absolute"
+        top="2vh"
+        left="50%"
+        transform="translateX(-50%)"
+        zIndex={20}
+      >
+        <WhaleLogo width="clamp(100px, 15vw, 180px)" />
+      </Box>
+
+      {/* Likovi + wheel */}
       <Box
         display="flex"
-        alignItems="flex-end" // 👈 spušta likove skroz dole
-        justifyContent="center" // 👈 likovi bliže centru
+        alignItems="flex-end" // likovi i wheel idu dolje
+        justifyContent="center"
         h="100%"
-        gap="0" // 👈 manji razmak wheel <-> likovi
+        gap="0"
         px="1vw"
       >
         {/* Lik lijevo */}
@@ -35,11 +48,13 @@ const DesktopApp: React.FC<{
           src="/character-left.png"
           alt="Character Left"
           objectFit="contain"
-          h={['70%', '85%', '95%']}
-          maxW="28vw"
+          w={['40vw', '42vw', '44vw']} // zauzima skoro pola ekrana
+          maxW="clamp(300px, 45vw, 700px)" // responsive širina
+          aspectRatio={631 / 1036} // proporcije iz Figma
           pointerEvents="none"
-          mb="-10vh" // 👈 malo spuštanje
-          mr="-3vw"
+          alignSelf="flex-end"
+          mr="-5vw"
+          mb="-25vh"
         />
 
         {/* Wheel + Banner */}
@@ -47,10 +62,10 @@ const DesktopApp: React.FC<{
           display="flex"
           flexDirection="column"
           alignItems="center"
-          justifyContent="flex-end"
+          justifyContent="center"
           gap="clamp(20px, 5vh, 40px)"
           w={['60vw', '45vw', '32vw']}
-          maxW="600px"
+          maxW="clamp(300px, 40vw, 700px)"
           mb="-5vh"
         >
           <SpinsBanner spinsLeft={spinsLeft} />
@@ -64,18 +79,20 @@ const DesktopApp: React.FC<{
           src="/rightcarachter.png"
           alt="Character Right"
           objectFit="contain"
-          h={['70%', '85%', '95%']}
-          maxW="28vw"
+          w={['40vw', '42vw', '44vw']}
+          maxW="clamp(300px, 45vw, 700px)"
+          aspectRatio={631 / 1036}
           pointerEvents="none"
+          alignSelf="flex-end"
           ml="-3vw"
-          mb="-10vh"
+          mb="-28vh"
         />
       </Box>
     </Box>
   );
 };
 
-// 👇 Root koji bira Mobile ili Desktop
+// 👇 Root bira Mobile ili Desktop
 const Root = () => {
   const [spinsLeft, setSpinsLeft] = useState(2);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
