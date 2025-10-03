@@ -47,10 +47,11 @@ const DesktopApp: React.FC<{
           display="flex"
           flexDirection="column"
           alignItems="center"
-          justifyContent="center"
+          justifyContent="flex-end"
           gap="clamp(20px, 5vh, 40px)"
           w={['60vw', '45vw', '32vw']}
           maxW="600px"
+          mb="-5vh"
         >
           <SpinsBanner spinsLeft={spinsLeft} />
           <Box w="100%" aspectRatio="1/1">
