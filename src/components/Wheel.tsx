@@ -18,12 +18,12 @@ interface WheelProps {
 }
 
 const sectors = [
-  { label: 'FREE SPINS', color: '#FFAAE5' },
   { label: 'TRY AGAIN', color: '#F027C8' },
-  { label: 'FREE SPINS', color: '#F5D4EB' },
+  { label: 'FREE SPINS', color: '#FFAAE5' },
   { label: 'TRY AGAIN', color: '#E000B4' },
-  { label: 'FREE SPINS', color: '#FFAAE5' },
+  { label: 'FREE SPINS', color: '#F5D4EB' },
   { label: 'TRY AGAIN', color: '#F027C8' },
+  { label: 'FREE SPINS', color: '#FFAAE5' },
 ];
 
 /* ==== NOVI NAZIVI KEYFRAMESA ==== */
