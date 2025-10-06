@@ -181,42 +181,51 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
   }, []);
 
   const spin = () => {
-    if (spinsLeft <= 0 || isSpinning || claimed) return; // spriječi ponovno
+    if (spinsLeft <= 0 || isSpinning || claimed) return;
 
     setIsSpinning(true);
     const next = spinCount + 1;
     setSpinCount(next);
 
-    let rotation = angle;
-    let frames = 0;
+    const startRotation = angle;
 
-    let targetIndex = next === 1 ? 1 : 0;
+    const targetIndex = next === 1 ? 1 : 0;
     let targetAngle = targetIndex * sliceAngle;
     if (next === 1) targetAngle += sliceAngle / 6;
 
     const pointerOffset = -Math.PI / 2;
-    const extraSpins = 5 * 2 * Math.PI;
-    const finalAngle = extraSpins + pointerOffset - targetAngle;
+    const extraSpins = 4.8 * 2 * Math.PI;
+    const finalRotation = extraSpins + pointerOffset - targetAngle;
 
-    const interval = setInterval(() => {
-      frames++;
-      const progress = frames / 100;
-      rotation = angle + finalAngle * Math.sin((progress * Math.PI) / 2);
-      setAngle(rotation);
+    const duration = 6500;
+    const startTime = performance.now();
 
-      if (frames >= 100) {
-        clearInterval(interval);
+    // 🔥 cubic-bezier easing
+    const easeOutCubicBezier = (t: number) => {
+      return t < 0 ? 0 : t > 1 ? 1 : 1 - Math.pow(1 - t, 5);
+    };
+
+    const animate = (time: number) => {
+      const elapsed = time - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOutCubicBezier(progress);
+
+      const currentRotation = startRotation + finalRotation * eased;
+      setAngle(currentRotation);
+      drawWheel(currentRotation); // 🔥 ručno crta svaki frame
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
         setIsSpinning(false);
-        setSpinsLeft((p) => p - 1);
-        if (next === 2) {
-          setTimeout(() => {
-            onOpen(); // samo otvori modal
-            // ⚠️ maknuto setClaimed(true)
-          }, 750);
-        }
+        setSpinsLeft((p) => Math.max(p - 1, 0));
+        if (next === 2) setTimeout(() => onOpen(), 750);
       }
-    }, 20);
+    };
+
+    requestAnimationFrame(animate);
   };
+
   useEffect(() => {
     const savedClaimed = localStorage.getItem('claimedPrize');
     if (savedClaimed === 'true') {
@@ -322,7 +331,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
           maxW="100vw"
           h="100dvh"
           maxH="100dvh"
-          bg="transparent"
+          bg="linear-gradient(180deg, #863B53 0%, #611C3C 100%)"
           boxShadow="none"
           borderRadius="0"
           overflow="hidden"
@@ -337,7 +346,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
               backgroundImage: 'url(/sun-ray-bg.png)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              opacity: 0.06,
+              ppacity: 0.06,
             }}
           />
 
@@ -524,12 +533,24 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
                 bgGradient="linear(249deg, rgba(255, 94, 223, 0.20) 14.07%, rgba(224, 0, 180, 0.20) 85.93%)"
                 py={[3, 4]}
                 px={[4, 6]}
-                textAlign="center"
-                fontWeight="bold"
-                fontSize={['16px', '18px', '20px']}
-                color="white"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
               >
-                WHALE.IO
+                <Box
+                  as="span"
+                  color="#FFF"
+                  textAlign="center"
+                  textShadow="0 0 8px rgba(0, 0, 0, 0.32)"
+                  fontFamily="Jost"
+                  fontSize={['22px', '26px', '28px']}
+                  fontStyle="normal"
+                  fontWeight="800"
+                  lineHeight="36px"
+                  letterSpacing="0.05em"
+                >
+                  WHALE.IO
+                </Box>
               </Box>
             )}
 

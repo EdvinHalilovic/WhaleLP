@@ -6,6 +6,7 @@ import SpinsBanner from './components/SpinsBanner';
 import MobileLayout from './layouts/MobileLayout';
 import WhaleLogo from './logos/WhaleLogo';
 import SoundButton from './components/SoundButton';
+import CloudsScene from './components/CloudScene';
 
 const DesktopApp: React.FC<{
   spinsLeft: number;
@@ -22,8 +23,12 @@ const DesktopApp: React.FC<{
       bgPos="center"
       bgRepeat="no-repeat"
     >
+      {/* 🌸 Clouds pri dnu */}
+      <CloudsScene />
+
       <SoundButton />
-      {/* Lik lijevo */}
+
+      {/* Lijevi lik */}
       <Image
         src="/character-left.png"
         alt="Character Left"
@@ -32,15 +37,14 @@ const DesktopApp: React.FC<{
         bottom="0"
         w="33vw"
         h="auto"
-        maxW="none"
         objectFit="contain"
         pointerEvents="none"
         mb="-45vh"
         ml="20vh"
-        zIndex={1} // ide ispod wheela
+        zIndex={2}
       />
 
-      {/* Lik desno */}
+      {/* Desni lik */}
       <Image
         src="/rightcarachter.png"
         alt="Character Right"
@@ -49,15 +53,14 @@ const DesktopApp: React.FC<{
         bottom="0"
         w="33vw"
         h="auto"
-        maxW="none"
         objectFit="contain"
         pointerEvents="none"
         mb="-45vh"
         mr="20vh"
-        zIndex={1}
+        zIndex={2}
       />
 
-      {/* Centrirani container */}
+      {/* Centralni sadržaj */}
       <Box
         position="absolute"
         top="54%"
@@ -70,17 +73,14 @@ const DesktopApp: React.FC<{
         gap="clamp(20px, 5vh, 40px)"
         w="90vw"
         maxW="600px"
-        px={[2, 4, 6]}
-        zIndex={2} // sve iznad likova
+        zIndex={3}
       >
-        {/* Whale Logo sa custom marginom */}
-
         <Box
           position="absolute"
-          top="5%" // 👈 kontrolira koliko od vrha ekrana
+          top="5%"
           left="50%"
           transform="translateX(-50%)"
-          zIndex={2}
+          zIndex={3}
         >
           <WhaleLogo width="clamp(100px, 12vw, 160px)" />
         </Box>
@@ -91,10 +91,9 @@ const DesktopApp: React.FC<{
           alignItems="center"
           justifyContent="center"
           gap="clamp(20px, 5vh, 40px)"
-          mt="5rem" // 👈 ovo spušta samo Banner i Wheel
+          mt="5rem"
         >
           <SpinsBanner spinsLeft={spinsLeft} />
-
           <Box w="clamp(200px, 36vw, 460px)" aspectRatio="1/1">
             <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
           </Box>
@@ -109,9 +108,7 @@ const Root = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -119,7 +116,11 @@ const Root = () => {
   return (
     <ChakraProvider>
       {isMobile ? (
-        <MobileLayout spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+        <>
+          {/* 🌸 Clouds i na mobilnom */}
+          <CloudsScene />
+          <MobileLayout spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+        </>
       ) : (
         <DesktopApp spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
       )}
