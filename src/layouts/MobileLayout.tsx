@@ -24,25 +24,25 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
     return () => window.removeEventListener('resize', setAppHeight);
   }, []);
 
-  // ✅ Responsive vrijednosti
+  // ✅ Responsive vrijednosti (telefoni / tableti)
   const paddingValue = useBreakpointValue({
-    base: 'clamp(0.5rem, 3vw, 1rem)',
-    md: 'clamp(1rem, 4vw, 9rem)',
+    base: 'clamp(0.5rem, 3vw, 1rem)', // telefoni
+    md: 'clamp(1rem, 4vw, 9rem)', // tableti
   });
 
   const gapValue = useBreakpointValue({
-    base: 'clamp(1rem, 4vh, 2rem)',
-    md: '140px',
+    base: 'clamp(1rem, 4vh, 2rem)', // telefoni
+    md: '140px', // tableti - više prostora između bannera i wheela
   });
 
   const justifyValue = useBreakpointValue({
-    base: 'flex-start',
-    md: 'space-evenly',
+    base: 'flex-start', // telefoni
+    md: 'space-evenly', // tableti
   });
 
   const bannerMarginTop = useBreakpointValue({
-    base: '2vh',
-    md: '7vh',
+    base: '2vh', // telefoni
+    md: '7vh', // tableti
   });
 
   const flexHeight = useBreakpointValue({
@@ -50,10 +50,11 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
     md: '50vh',
   });
 
+  // ✅ Pomjeraj lika samo na tabletima ka gore
   const characterTranslateY = useBreakpointValue({
-    base: '0',
-    md: '-1%',
-    lg: '-12%',
+    base: '0', // ništa na telefonima
+    md: '-1%', // pomakni gore za iPad Mini / Air
+    lg: '-12%', // malo više ako hoćeš i za veće tablete
   });
 
   return (
@@ -65,14 +66,10 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
       bgPos="center"
       bgRepeat="no-repeat"
       overflow="hidden"
-      position="relative" // 🔥 ključno da logo ima referencu za apsolutno pozicioniranje
+      pt={useBreakpointValue({ base: '6vh', md: '4vh' })}
     >
-      {/* 🔊 Dugme za zvuk */}
       <SoundButton />
 
-      {/* 🔥 Whale.io logo — uvek vidljiv */}
-
-      {/* 🔹 Glavni sadržaj */}
       <Flex
         direction="column"
         align="center"
@@ -93,7 +90,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
           display="flex"
           justifyContent="center"
           alignItems="center"
-          transform={`translateY(${characterTranslateY})`}
+          transform={`translateY(${characterTranslateY})`} // 👈 ovo je ključ!
           transition="transform 0.4s ease"
         >
           <MobileCharacterWheelLayout
