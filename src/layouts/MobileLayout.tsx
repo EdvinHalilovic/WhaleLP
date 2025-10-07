@@ -77,7 +77,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
 
         {/* === Character + Wheel === */}
         <Box
-          w={useBreakpointValue({ base: '100%', md: '100%' })}
+          w={useBreakpointValue({ base: '85%', md: '100%' })}
           display="flex"
           justifyContent="center"
           alignItems="center"
