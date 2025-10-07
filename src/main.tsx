@@ -1,14 +1,12 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ChakraProvider, Box, Image } from '@chakra-ui/react';
+import Wheel from './components/Wheel';
 import SpinsBanner from './components/SpinsBanner';
+import MobileLayout from './layouts/MobileLayout';
 import WhaleLogo from './logos/WhaleLogo';
 import SoundButton from './components/SoundButton';
-
-// ⚡ Lazy load težih komponenti
-const Wheel = lazy(() => import('./components/Wheel'));
-const CloudsScene = lazy(() => import('./components/CloudScene'));
-const MobileLayout = lazy(() => import('./layouts/MobileLayout'));
+import CloudsScene from './components/CloudScene';
 
 const DesktopApp: React.FC<{
   spinsLeft: number;
@@ -26,15 +24,12 @@ const DesktopApp: React.FC<{
       bgRepeat="no-repeat"
     >
       {/* 🌸 Clouds pri dnu */}
-      <Suspense fallback={null}>
-        <CloudsScene />
-      </Suspense>
+      <CloudsScene />
 
       <SoundButton />
 
       {/* Lijevi lik */}
       <Image
-        loading="lazy"
         src="/character-left.png"
         alt="Character Left"
         position="absolute"
@@ -51,7 +46,6 @@ const DesktopApp: React.FC<{
 
       {/* Desni lik */}
       <Image
-        loading="lazy"
         src="/rightcarachter.png"
         alt="Character Right"
         position="absolute"
@@ -101,9 +95,7 @@ const DesktopApp: React.FC<{
         >
           <SpinsBanner spinsLeft={spinsLeft} />
           <Box w="clamp(200px, 36vw, 460px)" aspectRatio="1/1">
-            <Suspense fallback={null}>
-              <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
-            </Suspense>
+            <Wheel spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
           </Box>
         </Box>
       </Box>
@@ -123,22 +115,21 @@ const Root = () => {
 
   return (
     <ChakraProvider>
-      <Suspense fallback={null}>
-        {isMobile ? (
-          <>
-            {/* 🌸 Clouds i na mobilnom */}
-            <CloudsScene />
-            <MobileLayout spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
-          </>
-        ) : (
-          <DesktopApp spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
-        )}
-      </Suspense>
+      {isMobile ? (
+        <>
+          {/* 🌸 Clouds i na mobilnom */}
+          <CloudsScene />
+          <MobileLayout spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+        </>
+      ) : (
+        <DesktopApp spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+      )}
     </ChakraProvider>
   );
 };
 
-// 🚀 Bez StrictMode (brže mountanje u produkciji)
 ReactDOM.createRoot(document.getElementById('app') as HTMLElement).render(
-  <Root />
+  <React.StrictMode>
+    <Root />
+  </React.StrictMode>
 );
