@@ -14,15 +14,6 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
   setSpinsLeft,
 }) => {
   // ✅ iOS Safari height fix
-  useEffect(() => {
-    const setAppHeight = () => {
-      const doc = document.documentElement;
-      doc.style.setProperty('--app-height', `${window.innerHeight}px`);
-    };
-    setAppHeight();
-    window.addEventListener('resize', setAppHeight);
-    return () => window.removeEventListener('resize', setAppHeight);
-  }, []);
 
   // ✅ Responsive vrijednosti (telefoni / tableti)
   const paddingValue = useBreakpointValue({
