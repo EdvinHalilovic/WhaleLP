@@ -54,24 +54,8 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
   const [claimed, setClaimed] = useState(false);
 
   const sliceAngle = (2 * Math.PI) / sectors.length;
-  useEffect(() => {
-    const savedClaimed = localStorage.getItem('claimedPrize');
-    const savedSpins = localStorage.getItem('remainingSpins');
-
-    if (savedClaimed === 'true') {
-      setClaimed(true);
-      onOpen(); // otvori modal odmah
-    }
-
-    if (savedSpins !== null) {
-      setSpinsLeft(parseInt(savedSpins, 10));
-    }
-  }, []);
 
   /* === Čuvaj stanje kad se promijeni === */
-  useEffect(() => {
-    localStorage.setItem('remainingSpins', spinsLeft.toString());
-  }, [spinsLeft]);
 
   useEffect(() => {
     localStorage.setItem('claimedPrize', claimed.toString());
@@ -232,7 +216,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
       setClaimed(true);
     }
   }, []);
-  const alwaysOpen = claimed;
+
   return (
     <Box
       position="relative"
@@ -312,7 +296,7 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
         }}
       />
       <Modal
-        isOpen={alwaysOpen || isOpen} // ako je claimed => uvijek true
+        isOpen={isOpen} // ako je claimed => uvijek true
         onClose={() => {
           if (!claimed) {
             setClaimed(false);
@@ -346,7 +330,6 @@ const Wheel: React.FC<WheelProps> = ({ spinsLeft, setSpinsLeft }) => {
               backgroundImage: 'url(/sun-ray-bg.png)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              ppacity: 0.06,
             }}
           />
 
