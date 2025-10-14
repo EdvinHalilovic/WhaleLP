@@ -23,7 +23,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
 
   const gapValue = useBreakpointValue({
     base: 'clamp(1rem, 4vh, 2rem)', // telefoni
-    md: '140px', // tableti - više prostora između bannera i wheela
+    md: 'clamp(2rem, 10vh, 6rem)', // fle
   });
 
   const justifyValue = useBreakpointValue({
@@ -57,7 +57,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
       bgPos="center"
       bgRepeat="no-repeat"
       overflow="hidden"
-      pt={useBreakpointValue({ base: '6vh', md: '4vh' })}
+      pt={useBreakpointValue({ base: '0vh', md: '4vh' })}
     >
       <SoundButton />
 

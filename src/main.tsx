@@ -115,15 +115,24 @@ const Root = () => {
 
   return (
     <ChakraProvider>
-      {isMobile ? (
-        <>
-          {/* 🌸 Clouds i na mobilnom */}
-          <CloudsScene />
-          <MobileLayout spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
-        </>
-      ) : (
-        <DesktopApp spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
-      )}
+      <Box
+        w="100vw"
+        minH="100dvh" // ✅ koristi dvh da pokrije cijeli ekran i mobilne trake
+        bgImage="url('/background.jpg')"
+        bgSize="cover"
+        bgPos="center"
+        bgRepeat="no-repeat"
+        overflow="hidden"
+      >
+        {isMobile ? (
+          <>
+            <CloudsScene />
+            <MobileLayout spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+          </>
+        ) : (
+          <DesktopApp spinsLeft={spinsLeft} setSpinsLeft={setSpinsLeft} />
+        )}
+      </Box>
     </ChakraProvider>
   );
 };
