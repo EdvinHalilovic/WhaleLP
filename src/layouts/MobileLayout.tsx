@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box, Flex, useBreakpointValue } from '@chakra-ui/react';
 import MobileSpinsBanner from './MobileSpinsBanner';
 import MobileCharacterWheelLayout from './MobileCharacterWheelLayout';
@@ -13,39 +13,55 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
   spinsLeft,
   setSpinsLeft,
 }) => {
-  // ✅ iOS Safari height fix
-
-  // ✅ Responsive vrijednosti (telefoni / tableti)
+  // ✅ Adaptive padding
   const paddingValue = useBreakpointValue({
     base: 'clamp(0.5rem, 3vw, 1rem)', // telefoni
-    md: 'clamp(1rem, 4vw, 9rem)', // tableti
+    sm: 'clamp(1rem, 4vw, 2rem)', // mali tableti (iPad mini)
+    md: 'clamp(2rem, 5vw, 3rem)', // srednji tableti
+    lg: 'clamp(2.5rem, 6vw, 4rem)', // veći tableti
   });
 
   const gapValue = useBreakpointValue({
-    base: 'clamp(1rem, 4vh, 2rem)', // telefoni
-    md: 'clamp(2rem, 10vh, 6rem)', // fle
+    base: 'clamp(1rem, 4vh, 2rem)',
+    sm: 'clamp(1.5rem, 5vh, 3rem)',
+    md: 'clamp(2rem, 6vh, 4rem)',
+    lg: 'clamp(2.5rem, 8vh, 5rem)',
   });
 
   const justifyValue = useBreakpointValue({
-    base: 'flex-start', // telefoni
-    md: 'space-evenly', // tableti
+    base: 'flex-start',
+    sm: 'center',
+    md: 'space-evenly',
+    lg: 'space-evenly',
   });
 
   const bannerMarginTop = useBreakpointValue({
-    base: '2vh', // telefoni
-    md: '7vh', // tableti
+    base: '2vh',
+    sm: '4vh',
+    md: '6vh',
+    lg: '8vh',
   });
 
   const flexHeight = useBreakpointValue({
     base: 'auto',
-    md: '50vh',
+    sm: '60vh',
+    md: '55vh',
+    lg: '50vh',
   });
 
-  // ✅ Pomjeraj lika samo na tabletima ka gore
+  // ✅ Pomjeraj lika progresivno više na većim tabletima
   const characterTranslateY = useBreakpointValue({
-    base: '0', // ništa na telefonima
-    md: '-1%', // pomakni gore za iPad Mini / Air
-    lg: '-12%', // malo više ako hoćeš i za veće tablete
+    base: '0',
+    sm: '-5%',
+    md: '49%',
+    lg: '-20%',
+  });
+
+  const wheelWidth = useBreakpointValue({
+    base: '85%',
+    sm: '90%',
+    md: '95%',
+    lg: '100%',
   });
 
   return (
@@ -57,7 +73,11 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
       bgPos="center"
       bgRepeat="no-repeat"
       overflow="hidden"
-      pt={useBreakpointValue({ base: '0vh', md: '4vh' })}
+      pt={useBreakpointValue({
+        base: 'clamp(2vh, 4vh, 6vh)',
+        sm: '3vh',
+        md: '4vh',
+      })}
     >
       <SoundButton />
 
@@ -76,12 +96,15 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({
         </Box>
 
         {/* === Character + Wheel === */}
+        {/* === Character + Wheel === */}
         <Box
-          w={useBreakpointValue({ base: '85%', md: '100%' })}
+          w={wheelWidth}
           display="flex"
           justifyContent="center"
           alignItems="center"
-          transform={`translateY(${characterTranslateY})`} // 👈 ovo je ključ!
+          position="relative" // 👈 dodano
+          zIndex={5} // 👈 dodano
+          transform={`translateY(${characterTranslateY})`}
           transition="transform 0.4s ease"
         >
           <MobileCharacterWheelLayout

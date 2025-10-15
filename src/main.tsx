@@ -23,9 +23,7 @@ const DesktopApp: React.FC<{
       bgPos="center"
       bgRepeat="no-repeat"
     >
-      {/* 🌸 Clouds pri dnu */}
       <CloudsScene />
-
       <SoundButton />
 
       {/* Lijevi lik */}
@@ -75,9 +73,10 @@ const DesktopApp: React.FC<{
         maxW="600px"
         zIndex={3}
       >
+        {/* ✅ Safe area padding za logo */}
         <Box
           position="absolute"
-          top="5%"
+          top="calc(env(safe-area-inset-top) + 5%)"
           left="50%"
           transform="translateX(-50%)"
           zIndex={3}
@@ -107,6 +106,20 @@ const Root = () => {
   const [spinsLeft, setSpinsLeft] = useState(2);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  // ✅ Fix za Safari viewport height bug
+  useEffect(() => {
+    const setAppHeight = () => {
+      document.documentElement.style.setProperty(
+        '--app-height',
+        `${window.innerHeight}px`
+      );
+    };
+
+    setAppHeight();
+    window.addEventListener('resize', setAppHeight);
+    return () => window.removeEventListener('resize', setAppHeight);
+  }, []);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
@@ -117,7 +130,7 @@ const Root = () => {
     <ChakraProvider>
       <Box
         w="100vw"
-        minH="100dvh" // ✅ koristi dvh da pokrije cijeli ekran i mobilne trake
+        minH="var(--app-height)" // ✅ koristi preciznu visinu
         bgImage="url('/background.jpg')"
         bgSize="cover"
         bgPos="center"
